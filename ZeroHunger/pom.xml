@@ -15,7 +15,7 @@ Now, create your proto files inside src/main/resources
     <modelVersion>4.0.0</modelVersion>
     <groupId>grpc.examples.strings</groupId>
     <!--  Name of the project  -->
-    <artifactId>StringGRPCClient</artifactId>
+    <artifactId>ZeroHunger</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <dependencies>
         <dependency>
