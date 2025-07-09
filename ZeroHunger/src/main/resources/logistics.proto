@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package logistics;
+
+// Import common messages
+import "common.proto";
+
+option java_package = "grpc.logistics";
+option java_multiple_files = true;
+
+// The LogisticsService manages the physical delivery of food items.
+service LogisticsService {
+  rpc HandleDeliveryRequest(Delivery) returns (DeliveryResponse);
+  rpc TrackDelivery(stream LocationUpdate) returns (stream Location);
+}
+
+message Delivery {
+  repeated common.FoodItemQuantity items = 1;
+  common.Address destination = 2;
+  common.Address location = 3;
+}
+
+message DeliveryResponse {
+  bool accepted = 1;
+  int32 delivery_id = 2;
+  string message = 3;
+  string pickup_time = 4;
+}
+
+message LocationUpdate {
+  int32 delivery_id = 1;
+}
+
+message Location {
+  int32 delivery_id = 1;
+  string longitude = 2;
+  string latitude = 3;
+  string status = 4;
+}
