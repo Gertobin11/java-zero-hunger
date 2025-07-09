@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package common;
+option java_package = "grpc.common";
+option java_multiple_files = true;
+
+// base message for a food item
+message FoodItem {
+  int32 id = 1;
+  string name = 2;
+}
+
+// Basic address format to be used 
+message Address {
+  string eircode = 1;
+  string address = 2; 
+}
+
+// expanded food item with quantity
+message FoodItemQuantity {
+  FoodItem item = 1;    // The food item.
+  int32 quantity = 2;   // The quantity of that item.
+}

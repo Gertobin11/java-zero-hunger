@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package smart_hub;
+
+// Import the common messages
+import "common.proto";
+import "google/protobuf/empty.proto";
+
+option java_package = "grpc.smart_hub";
+option java_multiple_files = true;
+
+// The SmartHubService manages user food requests.
+service SmartHubService {
+  rpc HandleFoodRequests(FoodRequest) returns (Status);
+  rpc StatusUpdate(StatusRequest) returns (Status);
+  
+  // No parameters are needed for this method so we use the default
+  // google.protobuf.Empty to show this
+  rpc GetAllStatus(google.protobuf.Empty) returns (stream Status);
+}
+
+message FoodRequest {
+  repeated common.FoodItemQuantity items = 1; // array of food items
+  common.Address destination = 2;
+  int32 request_id = 3;
+}
+
+message StatusRequest {
+  int32 request_id = 1;
+}
+
+message Status {
+  int32 request_id = 1;
+  string status = 2;
+  int32 delivery_id = 3;
+  string pickup_time = 4;
+}

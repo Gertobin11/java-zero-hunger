@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package food_source;
+
+// import common messages
+import "common.proto";
+
+option java_package = "grpc.food_source";
+option java_multiple_files = true;
+
+// The food source service contains a mapping of addresses that contain items available 
+service FoodSourceService {
+  // takes an argument of address and streams the items at that address
+  rpc StreamAvailableFoodItems(common.Address) returns (stream common.FoodItem);
+}
