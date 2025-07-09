@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package common;
-option java_package = "gprc.common";
+option java_package = "grpc.common";
 option java_multiple_files = true;
 
 // base message for a food item
