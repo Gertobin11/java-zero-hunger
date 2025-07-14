@@ -5,8 +5,8 @@
 package services;
 
 import com.google.protobuf.Empty;
-import grpc.smart_hub.FoodRequest;
-import grpc.smart_hub.SavedFoodRequest;
+import grpc.common.FoodRequest;
+import grpc.common.SavedFoodRequest;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
 import grpc.smart_hub.StatusResponse;

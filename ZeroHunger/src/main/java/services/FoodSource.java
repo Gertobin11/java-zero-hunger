@@ -7,7 +7,10 @@ package services;
 import grpc.common.Address;
 import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
+import grpc.common.FoodRequest;
+import grpc.common.SavedFoodRequest;
 import grpc.food_source.FoodSourceServiceGrpc.FoodSourceServiceImplBase;
+import grpc.food_source.StockResponse;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -28,10 +32,10 @@ public class FoodSource extends FoodSourceServiceImplBase {
 
         int port = 50051;
 
-        Server server = ServerBuilder.forPort(port)
-                .addService(mainFoodSource)
-                .build()
-                .start();
+        Server server = ServerBuilder.forPort(port).
+                addService(mainFoodSource).
+                build().
+                start();
 
         System.out.println("Main Food Source started, listening on " + port);
 
@@ -39,14 +43,19 @@ public class FoodSource extends FoodSourceServiceImplBase {
     }
 
     /**
-     * A method that returns an array list of FoodItemQunatity items 
-     * that match the passed address
-     * @param address an instance of an Address, with a location String and an eircode String
-     * @param responseObserver what we send back to the client i.e a stream of foodItemQuantities
+     * A method that returns an array list of FoodItemQunatity items that match
+     * the passed address
+     *
+     * @param address an instance of an Address, with a location String and an
+     * eircode String
+     * @param responseObserver what we send back to the client i.e a stream of
+     * foodItemQuantities
      */
     @Override
     public void streamAvailableFoodItems(Address address, StreamObserver<FoodItemQuantity> responseObserver) {
-        System.out.println("Received request for available food items at eircode: " + address.getEircode());
+        System.out.
+                println("Received request for available food items at eircode: " + address.
+                        getEircode());
         // get the dummy data
         Map<String, List<FoodItemQuantity>> dummyData = generateDummyData();
         // get the eircode, which acts as the key in the map
@@ -60,13 +69,100 @@ public class FoodSource extends FoodSourceServiceImplBase {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                Thread.currentThread().
+                        interrupt();
             }
         }
         responseObserver.onCompleted();
 
         System.out.println(
                 "Finished listing available items at: " + address.getEircode());
+    }
+
+    @Override
+    public StreamObserver<SavedFoodRequest> checkIfFoodRequestIsInStock(StreamObserver<StockResponse> responseObserver) {
+        System.out.println("Started receiving requests for stock ");
+
+        return new StreamObserver<SavedFoodRequest>() {
+            // we will populate these if a store has the matching requested items
+            private String storeWithStock = null;
+            private int inStockRequestID = 0;
+            private boolean requestInStock = false;
+
+            // generate dummy data to handle the request
+            Map<String, List<FoodItemQuantity>> dummyData = generateDummyData();
+
+            @Override
+            public void onNext(SavedFoodRequest savedFoodRequest) {
+                // loop over the entries in the dummy data
+                for (Map.Entry<String, List<FoodItemQuantity>> entry : dummyData.
+                        entrySet()) {
+                    // extract the eircode and the items
+                    String eircode = entry.getKey();
+                    List<FoodItemQuantity> items = entry.getValue();
+
+                    // set the value to true before each check
+                    boolean inStock = true;
+                    FoodRequest foodRequest = savedFoodRequest.getFoodRequest();
+                    List<FoodItemQuantity> requestedItems = foodRequest.
+                            getItemsList();
+                    // loop through all the items in the request
+                    for (FoodItemQuantity requestedItem : requestedItems) {
+                        // check if the item is in the location by checking the item id
+                        // stream filter tutorial https://www.geeksforgeeks.org/java/stream-filter-java-examples/
+                        Optional<FoodItemQuantity> matchingItem = items.stream().
+                                filter(item -> item.getItem().
+                                getId() == requestedItem.getItem().
+                                        getId()).
+                                findFirst();
+                        if (matchingItem.isEmpty()) {
+                            // if there is no match we set inStock to false and break out of this location
+                            inStock = false;
+                            break;
+                        } else if (requestedItem.getQuantity() > matchingItem.
+                                get().
+                                getQuantity()) {
+                            // if the quantity is less than what is requested we set in stock to false and break out of this location
+                            inStock = false;
+                            break;
+                        }
+                    }
+                    if (inStock) {
+                        // if it is in stock we save the eircode of where it is in stock with the request id and break out of the loop
+                        storeWithStock = eircode;
+                        requestInStock = true;
+                        inStockRequestID = savedFoodRequest.getRequestId();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // called when a client sends an error
+                //....
+            }
+
+            @Override
+            public void onCompleted() {
+                // build the address of the store that has the stock 
+                Address address = Address.newBuilder().
+                        setAddress("").
+                        setEircode(storeWithStock).
+                        build();
+                
+                // create the response message
+                StockResponse response = StockResponse.newBuilder().
+                        setAddress(address).
+                        setInstock(requestInStock).
+                        setRequestId(inStockRequestID).
+                        build();
+                // call the onNext on the responseObserver to send the message
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            }
+
+        };
     }
 
     /**
@@ -110,15 +206,21 @@ public class FoodSource extends FoodSourceServiceImplBase {
             List<FoodItemQuantity> fooditemQuantityList = new ArrayList<>();
             for (int i = 0; i <= essentialGroceries.length; i++) {
                 // create a food item from the FoodItem message 
-                FoodItem foodItem = FoodItem.newBuilder().setId(i + 1).setName(essentialGroceries[i]).build();
+                FoodItem foodItem = FoodItem.newBuilder().
+                        setId(i + 1).
+                        setName(essentialGroceries[i]).
+                        build();
                 // create  a foodItemQuantity, using the previous FoodItem
-                FoodItemQuantity foodItemQuantity = FoodItemQuantity.newBuilder().setItem(foodItem).setQuantity(+3).build();
+                FoodItemQuantity foodItemQuantity = FoodItemQuantity.
+                        newBuilder().
+                        setItem(foodItem).
+                        setQuantity(+3).
+                        build();
                 // add it to the list
                 fooditemQuantityList.add(foodItemQuantity);
             }
             // create an entry in the map for the current eircode in the loop
             eircodeToFoodItemQuantityMap.put(eircode, fooditemQuantityList);
-//          
         }
         return eircodeToFoodItemQuantityMap;
     }

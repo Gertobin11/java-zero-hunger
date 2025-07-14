@@ -14,6 +14,11 @@ public final class FoodSource {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_food_source_StockResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_food_source_StockResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -24,10 +29,14 @@ public final class FoodSource {
   static {
     java.lang.String[] descriptorData = {
       "\n\021food_source.proto\022\013food_source\032\014common" +
-      ".proto2\\\n\021FoodSourceService\022G\n\030StreamAva" +
-      "ilableFoodItems\022\017.common.Address\032\030.commo" +
-      "n.FoodItemQuantity0\001B\024\n\020grpc.food_source" +
-      "P\001b\006proto3"
+      ".proto\"V\n\rStockResponse\022 \n\007address\030\001 \001(\013" +
+      "2\017.common.Address\022\017\n\007instock\030\002 \001(\010\022\022\n\nre" +
+      "quest_id\030\003 \001(\0052\263\001\n\021FoodSourceService\022G\n\030" +
+      "streamAvailableFoodItems\022\017.common.Addres" +
+      "s\032\030.common.FoodItemQuantity0\001\022U\n\033checkIf" +
+      "FoodRequestIsInStock\022\030.common.SavedFoodR" +
+      "equest\032\032.food_source.StockResponse(\001B\024\n\020" +
+      "grpc.food_sourceP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -42,6 +51,12 @@ public final class FoodSource {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           grpc.common.Common.getDescriptor(),
         }, assigner);
+    internal_static_food_source_StockResponse_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_food_source_StockResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_food_source_StockResponse_descriptor,
+        new java.lang.String[] { "Address", "Instock", "RequestId", });
     grpc.common.Common.getDescriptor();
   }
 

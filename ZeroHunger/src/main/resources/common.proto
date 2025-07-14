@@ -21,3 +21,16 @@ message FoodItemQuantity {
   FoodItem item = 1;    // The food item.
   int32 quantity = 2;   // The quantity of that item.
 }
+
+message SavedFoodRequest {
+    int32 request_id = 1;
+    FoodRequest foodRequest = 2;
+    string status = 3;
+    int32 delivery_id = 4;
+    string pickup_time = 5;
+}
+
+message FoodRequest {
+  repeated FoodItemQuantity items = 1; // array of food items
+  Address destination = 2;
+}

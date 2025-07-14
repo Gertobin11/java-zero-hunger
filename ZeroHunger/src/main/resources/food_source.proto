@@ -11,5 +11,12 @@ option java_multiple_files = true;
 // The food source service contains a mapping of addresses that contain items available 
 service FoodSourceService {
   // takes an argument of address and streams the items at that address
-  rpc StreamAvailableFoodItems(common.Address) returns (stream common.FoodItemQuantity);
+  rpc streamAvailableFoodItems(common.Address) returns (stream common.FoodItemQuantity);
+  rpc checkIfFoodRequestIsInStock(stream common.SavedFoodRequest) returns (StockResponse);
+}
+
+  message StockResponse {
+    common.Address address = 1;
+    bool instock = 2;
+    int32 request_id = 3;
 }

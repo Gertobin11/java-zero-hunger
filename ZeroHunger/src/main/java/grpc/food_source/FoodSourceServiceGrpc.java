@@ -34,7 +34,7 @@ public final class FoodSourceServiceGrpc {
       grpc.common.FoodItemQuantity> getStreamAvailableFoodItemsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "StreamAvailableFoodItems",
+      fullMethodName = SERVICE_NAME + '/' + "streamAvailableFoodItems",
       requestType = grpc.common.Address.class,
       responseType = grpc.common.FoodItemQuantity.class,
       methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
@@ -48,18 +48,50 @@ public final class FoodSourceServiceGrpc {
               io.grpc.MethodDescriptor.<grpc.common.Address, grpc.common.FoodItemQuantity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
-                  "food_source.FoodSourceService", "StreamAvailableFoodItems"))
+                  "food_source.FoodSourceService", "streamAvailableFoodItems"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.common.Address.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.common.FoodItemQuantity.getDefaultInstance()))
-                  .setSchemaDescriptor(new FoodSourceServiceMethodDescriptorSupplier("StreamAvailableFoodItems"))
+                  .setSchemaDescriptor(new FoodSourceServiceMethodDescriptorSupplier("streamAvailableFoodItems"))
                   .build();
           }
         }
      }
      return getStreamAvailableFoodItemsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<grpc.common.SavedFoodRequest,
+      grpc.food_source.StockResponse> getCheckIfFoodRequestIsInStockMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "checkIfFoodRequestIsInStock",
+      requestType = grpc.common.SavedFoodRequest.class,
+      responseType = grpc.food_source.StockResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+  public static io.grpc.MethodDescriptor<grpc.common.SavedFoodRequest,
+      grpc.food_source.StockResponse> getCheckIfFoodRequestIsInStockMethod() {
+    io.grpc.MethodDescriptor<grpc.common.SavedFoodRequest, grpc.food_source.StockResponse> getCheckIfFoodRequestIsInStockMethod;
+    if ((getCheckIfFoodRequestIsInStockMethod = FoodSourceServiceGrpc.getCheckIfFoodRequestIsInStockMethod) == null) {
+      synchronized (FoodSourceServiceGrpc.class) {
+        if ((getCheckIfFoodRequestIsInStockMethod = FoodSourceServiceGrpc.getCheckIfFoodRequestIsInStockMethod) == null) {
+          FoodSourceServiceGrpc.getCheckIfFoodRequestIsInStockMethod = getCheckIfFoodRequestIsInStockMethod = 
+              io.grpc.MethodDescriptor.<grpc.common.SavedFoodRequest, grpc.food_source.StockResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setFullMethodName(generateFullMethodName(
+                  "food_source.FoodSourceService", "checkIfFoodRequestIsInStock"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.common.SavedFoodRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.food_source.StockResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new FoodSourceServiceMethodDescriptorSupplier("checkIfFoodRequestIsInStock"))
+                  .build();
+          }
+        }
+     }
+     return getCheckIfFoodRequestIsInStockMethod;
   }
 
   /**
@@ -102,6 +134,13 @@ public final class FoodSourceServiceGrpc {
       asyncUnimplementedUnaryCall(getStreamAvailableFoodItemsMethod(), responseObserver);
     }
 
+    /**
+     */
+    public io.grpc.stub.StreamObserver<grpc.common.SavedFoodRequest> checkIfFoodRequestIsInStock(
+        io.grpc.stub.StreamObserver<grpc.food_source.StockResponse> responseObserver) {
+      return asyncUnimplementedStreamingCall(getCheckIfFoodRequestIsInStockMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -111,6 +150,13 @@ public final class FoodSourceServiceGrpc {
                 grpc.common.Address,
                 grpc.common.FoodItemQuantity>(
                   this, METHODID_STREAM_AVAILABLE_FOOD_ITEMS)))
+          .addMethod(
+            getCheckIfFoodRequestIsInStockMethod(),
+            asyncClientStreamingCall(
+              new MethodHandlers<
+                grpc.common.SavedFoodRequest,
+                grpc.food_source.StockResponse>(
+                  this, METHODID_CHECK_IF_FOOD_REQUEST_IS_IN_STOCK)))
           .build();
     }
   }
@@ -145,6 +191,14 @@ public final class FoodSourceServiceGrpc {
         io.grpc.stub.StreamObserver<grpc.common.FoodItemQuantity> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getStreamAvailableFoodItemsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<grpc.common.SavedFoodRequest> checkIfFoodRequestIsInStock(
+        io.grpc.stub.StreamObserver<grpc.food_source.StockResponse> responseObserver) {
+      return asyncClientStreamingCall(
+          getChannel().newCall(getCheckIfFoodRequestIsInStockMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -204,6 +258,7 @@ public final class FoodSourceServiceGrpc {
   }
 
   private static final int METHODID_STREAM_AVAILABLE_FOOD_ITEMS = 0;
+  private static final int METHODID_CHECK_IF_FOOD_REQUEST_IS_IN_STOCK = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -236,6 +291,9 @@ public final class FoodSourceServiceGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_CHECK_IF_FOOD_REQUEST_IS_IN_STOCK:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.checkIfFoodRequestIsInStock(
+              (io.grpc.stub.StreamObserver<grpc.food_source.StockResponse>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -288,6 +346,7 @@ public final class FoodSourceServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new FoodSourceServiceFileDescriptorSupplier())
               .addMethod(getStreamAvailableFoodItemsMethod())
+              .addMethod(getCheckIfFoodRequestIsInStockMethod())
               .build();
         }
       }

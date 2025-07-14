@@ -10,8 +10,8 @@ option java_multiple_files = true;
 
 // The LogisticsService manages the physical delivery of food items.
 service LogisticsService {
-  rpc HandleDeliveryRequest(Delivery) returns (DeliveryResponse);
-  rpc TrackDelivery(stream LocationUpdate) returns (stream Location);
+  rpc handleDeliveryRequest(Delivery) returns (DeliveryResponse);
+  rpc trackDelivery(stream LocationUpdate) returns (stream Location);
 }
 
 message Delivery {
