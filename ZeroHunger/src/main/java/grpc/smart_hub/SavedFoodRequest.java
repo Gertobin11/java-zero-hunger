@@ -4,18 +4,18 @@
 package grpc.smart_hub;
 
 /**
- * Protobuf type {@code smart_hub.Status}
+ * Protobuf type {@code smart_hub.SavedFoodRequest}
  */
-public  final class Status extends
+public  final class SavedFoodRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:smart_hub.Status)
-    StatusOrBuilder {
+    // @@protoc_insertion_point(message_implements:smart_hub.SavedFoodRequest)
+    SavedFoodRequestOrBuilder {
 private static final long serialVersionUID = 0L;
-  // Use Status.newBuilder() to construct.
-  private Status(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+  // Use SavedFoodRequest.newBuilder() to construct.
+  private SavedFoodRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
     super(builder);
   }
-  private Status() {
+  private SavedFoodRequest() {
     requestId_ = 0;
     status_ = "";
     deliveryId_ = 0;
@@ -27,7 +27,7 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private Status(
+  private SavedFoodRequest(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -52,17 +52,30 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
+            grpc.smart_hub.FoodRequest.Builder subBuilder = null;
+            if (foodRequest_ != null) {
+              subBuilder = foodRequest_.toBuilder();
+            }
+            foodRequest_ = input.readMessage(grpc.smart_hub.FoodRequest.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(foodRequest_);
+              foodRequest_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
+          case 26: {
             java.lang.String s = input.readStringRequireUtf8();
 
             status_ = s;
             break;
           }
-          case 24: {
+          case 32: {
 
             deliveryId_ = input.readInt32();
             break;
           }
-          case 34: {
+          case 42: {
             java.lang.String s = input.readStringRequireUtf8();
 
             pickupTime_ = s;
@@ -89,15 +102,15 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return grpc.smart_hub.SmartHub.internal_static_smart_hub_Status_descriptor;
+    return grpc.smart_hub.SmartHub.internal_static_smart_hub_SavedFoodRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return grpc.smart_hub.SmartHub.internal_static_smart_hub_Status_fieldAccessorTable
+    return grpc.smart_hub.SmartHub.internal_static_smart_hub_SavedFoodRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            grpc.smart_hub.Status.class, grpc.smart_hub.Status.Builder.class);
+            grpc.smart_hub.SavedFoodRequest.class, grpc.smart_hub.SavedFoodRequest.Builder.class);
   }
 
   public static final int REQUEST_ID_FIELD_NUMBER = 1;
@@ -109,10 +122,31 @@ private static final long serialVersionUID = 0L;
     return requestId_;
   }
 
-  public static final int STATUS_FIELD_NUMBER = 2;
+  public static final int FOODREQUEST_FIELD_NUMBER = 2;
+  private grpc.smart_hub.FoodRequest foodRequest_;
+  /**
+   * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+   */
+  public boolean hasFoodRequest() {
+    return foodRequest_ != null;
+  }
+  /**
+   * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+   */
+  public grpc.smart_hub.FoodRequest getFoodRequest() {
+    return foodRequest_ == null ? grpc.smart_hub.FoodRequest.getDefaultInstance() : foodRequest_;
+  }
+  /**
+   * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+   */
+  public grpc.smart_hub.FoodRequestOrBuilder getFoodRequestOrBuilder() {
+    return getFoodRequest();
+  }
+
+  public static final int STATUS_FIELD_NUMBER = 3;
   private volatile java.lang.Object status_;
   /**
-   * <code>string status = 2;</code>
+   * <code>string status = 3;</code>
    */
   public java.lang.String getStatus() {
     java.lang.Object ref = status_;
@@ -127,7 +161,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string status = 2;</code>
+   * <code>string status = 3;</code>
    */
   public com.google.protobuf.ByteString
       getStatusBytes() {
@@ -143,19 +177,19 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int DELIVERY_ID_FIELD_NUMBER = 3;
+  public static final int DELIVERY_ID_FIELD_NUMBER = 4;
   private int deliveryId_;
   /**
-   * <code>int32 delivery_id = 3;</code>
+   * <code>int32 delivery_id = 4;</code>
    */
   public int getDeliveryId() {
     return deliveryId_;
   }
 
-  public static final int PICKUP_TIME_FIELD_NUMBER = 4;
+  public static final int PICKUP_TIME_FIELD_NUMBER = 5;
   private volatile java.lang.Object pickupTime_;
   /**
-   * <code>string pickup_time = 4;</code>
+   * <code>string pickup_time = 5;</code>
    */
   public java.lang.String getPickupTime() {
     java.lang.Object ref = pickupTime_;
@@ -170,7 +204,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string pickup_time = 4;</code>
+   * <code>string pickup_time = 5;</code>
    */
   public com.google.protobuf.ByteString
       getPickupTimeBytes() {
@@ -203,14 +237,17 @@ private static final long serialVersionUID = 0L;
     if (requestId_ != 0) {
       output.writeInt32(1, requestId_);
     }
+    if (foodRequest_ != null) {
+      output.writeMessage(2, getFoodRequest());
+    }
     if (!getStatusBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, status_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, status_);
     }
     if (deliveryId_ != 0) {
-      output.writeInt32(3, deliveryId_);
+      output.writeInt32(4, deliveryId_);
     }
     if (!getPickupTimeBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, pickupTime_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, pickupTime_);
     }
     unknownFields.writeTo(output);
   }
@@ -225,15 +262,19 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(1, requestId_);
     }
+    if (foodRequest_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getFoodRequest());
+    }
     if (!getStatusBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, status_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, status_);
     }
     if (deliveryId_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, deliveryId_);
+        .computeInt32Size(4, deliveryId_);
     }
     if (!getPickupTimeBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, pickupTime_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, pickupTime_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -245,14 +286,19 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof grpc.smart_hub.Status)) {
+    if (!(obj instanceof grpc.smart_hub.SavedFoodRequest)) {
       return super.equals(obj);
     }
-    grpc.smart_hub.Status other = (grpc.smart_hub.Status) obj;
+    grpc.smart_hub.SavedFoodRequest other = (grpc.smart_hub.SavedFoodRequest) obj;
 
     boolean result = true;
     result = result && (getRequestId()
         == other.getRequestId());
+    result = result && (hasFoodRequest() == other.hasFoodRequest());
+    if (hasFoodRequest()) {
+      result = result && getFoodRequest()
+          .equals(other.getFoodRequest());
+    }
     result = result && getStatus()
         .equals(other.getStatus());
     result = result && (getDeliveryId()
@@ -272,6 +318,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
     hash = (53 * hash) + getRequestId();
+    if (hasFoodRequest()) {
+      hash = (37 * hash) + FOODREQUEST_FIELD_NUMBER;
+      hash = (53 * hash) + getFoodRequest().hashCode();
+    }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + getStatus().hashCode();
     hash = (37 * hash) + DELIVERY_ID_FIELD_NUMBER;
@@ -283,69 +333,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static grpc.smart_hub.Status parseFrom(byte[] data)
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static grpc.smart_hub.Status parseFrom(java.io.InputStream input)
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static grpc.smart_hub.Status parseDelimitedFrom(java.io.InputStream input)
+  public static grpc.smart_hub.SavedFoodRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static grpc.smart_hub.Status parseDelimitedFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static grpc.smart_hub.Status parseFrom(
+  public static grpc.smart_hub.SavedFoodRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -358,7 +408,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(grpc.smart_hub.Status prototype) {
+  public static Builder newBuilder(grpc.smart_hub.SavedFoodRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -374,26 +424,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code smart_hub.Status}
+   * Protobuf type {@code smart_hub.SavedFoodRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:smart_hub.Status)
-      grpc.smart_hub.StatusOrBuilder {
+      // @@protoc_insertion_point(builder_implements:smart_hub.SavedFoodRequest)
+      grpc.smart_hub.SavedFoodRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return grpc.smart_hub.SmartHub.internal_static_smart_hub_Status_descriptor;
+      return grpc.smart_hub.SmartHub.internal_static_smart_hub_SavedFoodRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return grpc.smart_hub.SmartHub.internal_static_smart_hub_Status_fieldAccessorTable
+      return grpc.smart_hub.SmartHub.internal_static_smart_hub_SavedFoodRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              grpc.smart_hub.Status.class, grpc.smart_hub.Status.Builder.class);
+              grpc.smart_hub.SavedFoodRequest.class, grpc.smart_hub.SavedFoodRequest.Builder.class);
     }
 
-    // Construct using grpc.smart_hub.Status.newBuilder()
+    // Construct using grpc.smart_hub.SavedFoodRequest.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -413,6 +463,12 @@ private static final long serialVersionUID = 0L;
       super.clear();
       requestId_ = 0;
 
+      if (foodRequestBuilder_ == null) {
+        foodRequest_ = null;
+      } else {
+        foodRequest_ = null;
+        foodRequestBuilder_ = null;
+      }
       status_ = "";
 
       deliveryId_ = 0;
@@ -425,17 +481,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return grpc.smart_hub.SmartHub.internal_static_smart_hub_Status_descriptor;
+      return grpc.smart_hub.SmartHub.internal_static_smart_hub_SavedFoodRequest_descriptor;
     }
 
     @java.lang.Override
-    public grpc.smart_hub.Status getDefaultInstanceForType() {
-      return grpc.smart_hub.Status.getDefaultInstance();
+    public grpc.smart_hub.SavedFoodRequest getDefaultInstanceForType() {
+      return grpc.smart_hub.SavedFoodRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public grpc.smart_hub.Status build() {
-      grpc.smart_hub.Status result = buildPartial();
+    public grpc.smart_hub.SavedFoodRequest build() {
+      grpc.smart_hub.SavedFoodRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -443,9 +499,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public grpc.smart_hub.Status buildPartial() {
-      grpc.smart_hub.Status result = new grpc.smart_hub.Status(this);
+    public grpc.smart_hub.SavedFoodRequest buildPartial() {
+      grpc.smart_hub.SavedFoodRequest result = new grpc.smart_hub.SavedFoodRequest(this);
       result.requestId_ = requestId_;
+      if (foodRequestBuilder_ == null) {
+        result.foodRequest_ = foodRequest_;
+      } else {
+        result.foodRequest_ = foodRequestBuilder_.build();
+      }
       result.status_ = status_;
       result.deliveryId_ = deliveryId_;
       result.pickupTime_ = pickupTime_;
@@ -487,18 +548,21 @@ private static final long serialVersionUID = 0L;
     }
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof grpc.smart_hub.Status) {
-        return mergeFrom((grpc.smart_hub.Status)other);
+      if (other instanceof grpc.smart_hub.SavedFoodRequest) {
+        return mergeFrom((grpc.smart_hub.SavedFoodRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(grpc.smart_hub.Status other) {
-      if (other == grpc.smart_hub.Status.getDefaultInstance()) return this;
+    public Builder mergeFrom(grpc.smart_hub.SavedFoodRequest other) {
+      if (other == grpc.smart_hub.SavedFoodRequest.getDefaultInstance()) return this;
       if (other.getRequestId() != 0) {
         setRequestId(other.getRequestId());
+      }
+      if (other.hasFoodRequest()) {
+        mergeFoodRequest(other.getFoodRequest());
       }
       if (!other.getStatus().isEmpty()) {
         status_ = other.status_;
@@ -526,11 +590,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      grpc.smart_hub.Status parsedMessage = null;
+      grpc.smart_hub.SavedFoodRequest parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (grpc.smart_hub.Status) e.getUnfinishedMessage();
+        parsedMessage = (grpc.smart_hub.SavedFoodRequest) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -566,9 +630,126 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private grpc.smart_hub.FoodRequest foodRequest_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        grpc.smart_hub.FoodRequest, grpc.smart_hub.FoodRequest.Builder, grpc.smart_hub.FoodRequestOrBuilder> foodRequestBuilder_;
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public boolean hasFoodRequest() {
+      return foodRequestBuilder_ != null || foodRequest_ != null;
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public grpc.smart_hub.FoodRequest getFoodRequest() {
+      if (foodRequestBuilder_ == null) {
+        return foodRequest_ == null ? grpc.smart_hub.FoodRequest.getDefaultInstance() : foodRequest_;
+      } else {
+        return foodRequestBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public Builder setFoodRequest(grpc.smart_hub.FoodRequest value) {
+      if (foodRequestBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        foodRequest_ = value;
+        onChanged();
+      } else {
+        foodRequestBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public Builder setFoodRequest(
+        grpc.smart_hub.FoodRequest.Builder builderForValue) {
+      if (foodRequestBuilder_ == null) {
+        foodRequest_ = builderForValue.build();
+        onChanged();
+      } else {
+        foodRequestBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public Builder mergeFoodRequest(grpc.smart_hub.FoodRequest value) {
+      if (foodRequestBuilder_ == null) {
+        if (foodRequest_ != null) {
+          foodRequest_ =
+            grpc.smart_hub.FoodRequest.newBuilder(foodRequest_).mergeFrom(value).buildPartial();
+        } else {
+          foodRequest_ = value;
+        }
+        onChanged();
+      } else {
+        foodRequestBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public Builder clearFoodRequest() {
+      if (foodRequestBuilder_ == null) {
+        foodRequest_ = null;
+        onChanged();
+      } else {
+        foodRequest_ = null;
+        foodRequestBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public grpc.smart_hub.FoodRequest.Builder getFoodRequestBuilder() {
+      
+      onChanged();
+      return getFoodRequestFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    public grpc.smart_hub.FoodRequestOrBuilder getFoodRequestOrBuilder() {
+      if (foodRequestBuilder_ != null) {
+        return foodRequestBuilder_.getMessageOrBuilder();
+      } else {
+        return foodRequest_ == null ?
+            grpc.smart_hub.FoodRequest.getDefaultInstance() : foodRequest_;
+      }
+    }
+    /**
+     * <code>.smart_hub.FoodRequest foodRequest = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        grpc.smart_hub.FoodRequest, grpc.smart_hub.FoodRequest.Builder, grpc.smart_hub.FoodRequestOrBuilder> 
+        getFoodRequestFieldBuilder() {
+      if (foodRequestBuilder_ == null) {
+        foodRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            grpc.smart_hub.FoodRequest, grpc.smart_hub.FoodRequest.Builder, grpc.smart_hub.FoodRequestOrBuilder>(
+                getFoodRequest(),
+                getParentForChildren(),
+                isClean());
+        foodRequest_ = null;
+      }
+      return foodRequestBuilder_;
+    }
+
     private java.lang.Object status_ = "";
     /**
-     * <code>string status = 2;</code>
+     * <code>string status = 3;</code>
      */
     public java.lang.String getStatus() {
       java.lang.Object ref = status_;
@@ -583,7 +764,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string status = 2;</code>
+     * <code>string status = 3;</code>
      */
     public com.google.protobuf.ByteString
         getStatusBytes() {
@@ -599,7 +780,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string status = 2;</code>
+     * <code>string status = 3;</code>
      */
     public Builder setStatus(
         java.lang.String value) {
@@ -612,7 +793,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string status = 2;</code>
+     * <code>string status = 3;</code>
      */
     public Builder clearStatus() {
       
@@ -621,7 +802,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string status = 2;</code>
+     * <code>string status = 3;</code>
      */
     public Builder setStatusBytes(
         com.google.protobuf.ByteString value) {
@@ -637,13 +818,13 @@ private static final long serialVersionUID = 0L;
 
     private int deliveryId_ ;
     /**
-     * <code>int32 delivery_id = 3;</code>
+     * <code>int32 delivery_id = 4;</code>
      */
     public int getDeliveryId() {
       return deliveryId_;
     }
     /**
-     * <code>int32 delivery_id = 3;</code>
+     * <code>int32 delivery_id = 4;</code>
      */
     public Builder setDeliveryId(int value) {
       
@@ -652,7 +833,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 delivery_id = 3;</code>
+     * <code>int32 delivery_id = 4;</code>
      */
     public Builder clearDeliveryId() {
       
@@ -663,7 +844,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object pickupTime_ = "";
     /**
-     * <code>string pickup_time = 4;</code>
+     * <code>string pickup_time = 5;</code>
      */
     public java.lang.String getPickupTime() {
       java.lang.Object ref = pickupTime_;
@@ -678,7 +859,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string pickup_time = 4;</code>
+     * <code>string pickup_time = 5;</code>
      */
     public com.google.protobuf.ByteString
         getPickupTimeBytes() {
@@ -694,7 +875,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string pickup_time = 4;</code>
+     * <code>string pickup_time = 5;</code>
      */
     public Builder setPickupTime(
         java.lang.String value) {
@@ -707,7 +888,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string pickup_time = 4;</code>
+     * <code>string pickup_time = 5;</code>
      */
     public Builder clearPickupTime() {
       
@@ -716,7 +897,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string pickup_time = 4;</code>
+     * <code>string pickup_time = 5;</code>
      */
     public Builder setPickupTimeBytes(
         com.google.protobuf.ByteString value) {
@@ -742,41 +923,41 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:smart_hub.Status)
+    // @@protoc_insertion_point(builder_scope:smart_hub.SavedFoodRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:smart_hub.Status)
-  private static final grpc.smart_hub.Status DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:smart_hub.SavedFoodRequest)
+  private static final grpc.smart_hub.SavedFoodRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new grpc.smart_hub.Status();
+    DEFAULT_INSTANCE = new grpc.smart_hub.SavedFoodRequest();
   }
 
-  public static grpc.smart_hub.Status getDefaultInstance() {
+  public static grpc.smart_hub.SavedFoodRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<Status>
-      PARSER = new com.google.protobuf.AbstractParser<Status>() {
+  private static final com.google.protobuf.Parser<SavedFoodRequest>
+      PARSER = new com.google.protobuf.AbstractParser<SavedFoodRequest>() {
     @java.lang.Override
-    public Status parsePartialFrom(
+    public SavedFoodRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Status(input, extensionRegistry);
+      return new SavedFoodRequest(input, extensionRegistry);
     }
   };
 
-  public static com.google.protobuf.Parser<Status> parser() {
+  public static com.google.protobuf.Parser<SavedFoodRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<Status> getParserForType() {
+  public com.google.protobuf.Parser<SavedFoodRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public grpc.smart_hub.Status getDefaultInstanceForType() {
+  public grpc.smart_hub.SavedFoodRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

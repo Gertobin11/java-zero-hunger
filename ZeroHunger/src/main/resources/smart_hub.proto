@@ -11,27 +11,33 @@ option java_multiple_files = true;
 
 // The SmartHubService manages user food requests.
 service SmartHubService {
-  rpc HandleFoodRequests(FoodRequest) returns (Status);
-  rpc StatusUpdate(StatusRequest) returns (Status);
+  rpc HandleFoodRequests(FoodRequest) returns (StatusResponse);
+  rpc StatusUpdate(StatusRequest) returns (StatusResponse);
   
   // No parameters are needed for this method so we use the default
   // google.protobuf.Empty to show this
-  rpc GetAllStatus(google.protobuf.Empty) returns (stream Status);
+  rpc GetAllStatus(google.protobuf.Empty) returns (stream StatusResponse);
+}
+
+message SavedFoodRequest {
+    int32 request_id = 1;
+    FoodRequest foodRequest = 2;
+    string status = 3;
+    int32 delivery_id = 4;
+    string pickup_time = 5;
 }
 
 message FoodRequest {
   repeated common.FoodItemQuantity items = 1; // array of food items
   common.Address destination = 2;
-  int32 request_id = 3;
 }
 
 message StatusRequest {
   int32 request_id = 1;
 }
 
-message Status {
-  int32 request_id = 1;
-  string status = 2;
-  int32 delivery_id = 3;
-  string pickup_time = 4;
+message StatusResponse {
+  string status = 1;
+  int32 delivery_id = 2;
+  string pickup_time = 3;
 }

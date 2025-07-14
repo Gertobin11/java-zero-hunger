@@ -5,10 +5,13 @@
 package services;
 
 import grpc.smart_hub.FoodRequest;
+import grpc.smart_hub.SavedFoodRequest;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
-import grpc.smart_hub.Status;
+import grpc.smart_hub.StatusRequest;
+import grpc.smart_hub.StatusResponse;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import static io.grpc.Status.NOT_FOUND;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ import java.util.List;
  */
 public class SmartHub extends SmartHubServiceImplBase {
 
-    List<FoodRequest> foodRequests = new ArrayList<>();
+    List<SavedFoodRequest> foodRequests = new ArrayList<>();
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // create the smart hub instance
@@ -41,12 +44,14 @@ public class SmartHub extends SmartHubServiceImplBase {
     }
 
     @Override
-    public void handleFoodRequests(FoodRequest request, StreamObserver<Status> responseObserver) {
+    public void handleFoodRequests(FoodRequest request, StreamObserver<StatusResponse> responseObserver) {
         System.out.println("Recieved request for food items");
-        // add the requat to an array of currently requested items
-        foodRequests.add(request);
-        // create a default status message for initial food request
-        Status status = Status.newBuilder().setStatus("pending").setPickupTime("not set").setRequestId(request.getRequestId()).setDeliveryId(0).build();
+        // create a saved request from a client request 
+        SavedFoodRequest savedFoodRequest = SavedFoodRequest.newBuilder().setFoodRequest(request).setDeliveryId(0).setPickupTime("Not available").setStatus("Pending").setRequestId(foodRequests.size() + 1).build();
+        // add the saved food request to the array of saved requests
+        foodRequests.add(savedFoodRequest);
+        // create a status response based off the initial saved food request
+        StatusResponse status = StatusResponse.newBuilder().setStatus(savedFoodRequest.getStatus()).setPickupTime(savedFoodRequest.getPickupTime()).setDeliveryId(savedFoodRequest.getDeliveryId()).build();
 
         System.out.println("Request added to list for delivery when items are available");
         // return our response
@@ -54,6 +59,28 @@ public class SmartHub extends SmartHubServiceImplBase {
 
         responseObserver.onCompleted();
 
+    }
+
+    @Override
+    public void statusUpdate(StatusRequest request, StreamObserver<StatusResponse> responseObserver) {
+
+        SavedFoodRequest matchedRequest = null;
+        for (SavedFoodRequest foodRequest : foodRequests) {
+            if (foodRequest.getRequestId() == request.getRequestId()) {
+                matchedRequest = foodRequest;
+            }
+        }
+
+        if (matchedRequest != null) {
+            StatusResponse response = StatusResponse.newBuilder().setDeliveryId(matchedRequest.getDeliveryId()).setPickupTime(matchedRequest.getPickupTime()).setStatus(matchedRequest.getStatus()).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        else {
+            responseObserver.onError(NOT_FOUND.withDescription("Request with an ID of " + request.getRequestId() + " not found").asException());
+        }                
+
+        
     }
 
 }

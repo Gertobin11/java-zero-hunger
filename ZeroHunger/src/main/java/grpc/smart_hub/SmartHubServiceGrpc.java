@@ -31,21 +31,21 @@ public final class SmartHubServiceGrpc {
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<grpc.smart_hub.FoodRequest,
-      grpc.smart_hub.Status> getHandleFoodRequestsMethod;
+      grpc.smart_hub.StatusResponse> getHandleFoodRequestsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "HandleFoodRequests",
       requestType = grpc.smart_hub.FoodRequest.class,
-      responseType = grpc.smart_hub.Status.class,
+      responseType = grpc.smart_hub.StatusResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<grpc.smart_hub.FoodRequest,
-      grpc.smart_hub.Status> getHandleFoodRequestsMethod() {
-    io.grpc.MethodDescriptor<grpc.smart_hub.FoodRequest, grpc.smart_hub.Status> getHandleFoodRequestsMethod;
+      grpc.smart_hub.StatusResponse> getHandleFoodRequestsMethod() {
+    io.grpc.MethodDescriptor<grpc.smart_hub.FoodRequest, grpc.smart_hub.StatusResponse> getHandleFoodRequestsMethod;
     if ((getHandleFoodRequestsMethod = SmartHubServiceGrpc.getHandleFoodRequestsMethod) == null) {
       synchronized (SmartHubServiceGrpc.class) {
         if ((getHandleFoodRequestsMethod = SmartHubServiceGrpc.getHandleFoodRequestsMethod) == null) {
           SmartHubServiceGrpc.getHandleFoodRequestsMethod = getHandleFoodRequestsMethod = 
-              io.grpc.MethodDescriptor.<grpc.smart_hub.FoodRequest, grpc.smart_hub.Status>newBuilder()
+              io.grpc.MethodDescriptor.<grpc.smart_hub.FoodRequest, grpc.smart_hub.StatusResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "smart_hub.SmartHubService", "HandleFoodRequests"))
@@ -53,7 +53,7 @@ public final class SmartHubServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.smart_hub.FoodRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.smart_hub.Status.getDefaultInstance()))
+                  grpc.smart_hub.StatusResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new SmartHubServiceMethodDescriptorSupplier("HandleFoodRequests"))
                   .build();
           }
@@ -63,21 +63,21 @@ public final class SmartHubServiceGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<grpc.smart_hub.StatusRequest,
-      grpc.smart_hub.Status> getStatusUpdateMethod;
+      grpc.smart_hub.StatusResponse> getStatusUpdateMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "StatusUpdate",
       requestType = grpc.smart_hub.StatusRequest.class,
-      responseType = grpc.smart_hub.Status.class,
+      responseType = grpc.smart_hub.StatusResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<grpc.smart_hub.StatusRequest,
-      grpc.smart_hub.Status> getStatusUpdateMethod() {
-    io.grpc.MethodDescriptor<grpc.smart_hub.StatusRequest, grpc.smart_hub.Status> getStatusUpdateMethod;
+      grpc.smart_hub.StatusResponse> getStatusUpdateMethod() {
+    io.grpc.MethodDescriptor<grpc.smart_hub.StatusRequest, grpc.smart_hub.StatusResponse> getStatusUpdateMethod;
     if ((getStatusUpdateMethod = SmartHubServiceGrpc.getStatusUpdateMethod) == null) {
       synchronized (SmartHubServiceGrpc.class) {
         if ((getStatusUpdateMethod = SmartHubServiceGrpc.getStatusUpdateMethod) == null) {
           SmartHubServiceGrpc.getStatusUpdateMethod = getStatusUpdateMethod = 
-              io.grpc.MethodDescriptor.<grpc.smart_hub.StatusRequest, grpc.smart_hub.Status>newBuilder()
+              io.grpc.MethodDescriptor.<grpc.smart_hub.StatusRequest, grpc.smart_hub.StatusResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "smart_hub.SmartHubService", "StatusUpdate"))
@@ -85,7 +85,7 @@ public final class SmartHubServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.smart_hub.StatusRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.smart_hub.Status.getDefaultInstance()))
+                  grpc.smart_hub.StatusResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new SmartHubServiceMethodDescriptorSupplier("StatusUpdate"))
                   .build();
           }
@@ -95,21 +95,21 @@ public final class SmartHubServiceGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      grpc.smart_hub.Status> getGetAllStatusMethod;
+      grpc.smart_hub.StatusResponse> getGetAllStatusMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetAllStatus",
       requestType = com.google.protobuf.Empty.class,
-      responseType = grpc.smart_hub.Status.class,
+      responseType = grpc.smart_hub.StatusResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      grpc.smart_hub.Status> getGetAllStatusMethod() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, grpc.smart_hub.Status> getGetAllStatusMethod;
+      grpc.smart_hub.StatusResponse> getGetAllStatusMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, grpc.smart_hub.StatusResponse> getGetAllStatusMethod;
     if ((getGetAllStatusMethod = SmartHubServiceGrpc.getGetAllStatusMethod) == null) {
       synchronized (SmartHubServiceGrpc.class) {
         if ((getGetAllStatusMethod = SmartHubServiceGrpc.getGetAllStatusMethod) == null) {
           SmartHubServiceGrpc.getGetAllStatusMethod = getGetAllStatusMethod = 
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, grpc.smart_hub.Status>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, grpc.smart_hub.StatusResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "smart_hub.SmartHubService", "GetAllStatus"))
@@ -117,7 +117,7 @@ public final class SmartHubServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.smart_hub.Status.getDefaultInstance()))
+                  grpc.smart_hub.StatusResponse.getDefaultInstance()))
                   .setSchemaDescriptor(new SmartHubServiceMethodDescriptorSupplier("GetAllStatus"))
                   .build();
           }
@@ -159,14 +159,14 @@ public final class SmartHubServiceGrpc {
     /**
      */
     public void handleFoodRequests(grpc.smart_hub.FoodRequest request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getHandleFoodRequestsMethod(), responseObserver);
     }
 
     /**
      */
     public void statusUpdate(grpc.smart_hub.StatusRequest request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getStatusUpdateMethod(), responseObserver);
     }
 
@@ -177,7 +177,7 @@ public final class SmartHubServiceGrpc {
      * </pre>
      */
     public void getAllStatus(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncUnimplementedUnaryCall(getGetAllStatusMethod(), responseObserver);
     }
 
@@ -188,21 +188,21 @@ public final class SmartHubServiceGrpc {
             asyncUnaryCall(
               new MethodHandlers<
                 grpc.smart_hub.FoodRequest,
-                grpc.smart_hub.Status>(
+                grpc.smart_hub.StatusResponse>(
                   this, METHODID_HANDLE_FOOD_REQUESTS)))
           .addMethod(
             getStatusUpdateMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 grpc.smart_hub.StatusRequest,
-                grpc.smart_hub.Status>(
+                grpc.smart_hub.StatusResponse>(
                   this, METHODID_STATUS_UPDATE)))
           .addMethod(
             getGetAllStatusMethod(),
             asyncServerStreamingCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
-                grpc.smart_hub.Status>(
+                grpc.smart_hub.StatusResponse>(
                   this, METHODID_GET_ALL_STATUS)))
           .build();
     }
@@ -232,7 +232,7 @@ public final class SmartHubServiceGrpc {
     /**
      */
     public void handleFoodRequests(grpc.smart_hub.FoodRequest request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getHandleFoodRequestsMethod(), getCallOptions()), request, responseObserver);
     }
@@ -240,7 +240,7 @@ public final class SmartHubServiceGrpc {
     /**
      */
     public void statusUpdate(grpc.smart_hub.StatusRequest request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getStatusUpdateMethod(), getCallOptions()), request, responseObserver);
     }
@@ -252,7 +252,7 @@ public final class SmartHubServiceGrpc {
      * </pre>
      */
     public void getAllStatus(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<grpc.smart_hub.Status> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getGetAllStatusMethod(), getCallOptions()), request, responseObserver);
     }
@@ -281,14 +281,14 @@ public final class SmartHubServiceGrpc {
 
     /**
      */
-    public grpc.smart_hub.Status handleFoodRequests(grpc.smart_hub.FoodRequest request) {
+    public grpc.smart_hub.StatusResponse handleFoodRequests(grpc.smart_hub.FoodRequest request) {
       return blockingUnaryCall(
           getChannel(), getHandleFoodRequestsMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public grpc.smart_hub.Status statusUpdate(grpc.smart_hub.StatusRequest request) {
+    public grpc.smart_hub.StatusResponse statusUpdate(grpc.smart_hub.StatusRequest request) {
       return blockingUnaryCall(
           getChannel(), getStatusUpdateMethod(), getCallOptions(), request);
     }
@@ -299,7 +299,7 @@ public final class SmartHubServiceGrpc {
      * google.protobuf.Empty to show this
      * </pre>
      */
-    public java.util.Iterator<grpc.smart_hub.Status> getAllStatus(
+    public java.util.Iterator<grpc.smart_hub.StatusResponse> getAllStatus(
         com.google.protobuf.Empty request) {
       return blockingServerStreamingCall(
           getChannel(), getGetAllStatusMethod(), getCallOptions(), request);
@@ -329,7 +329,7 @@ public final class SmartHubServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.smart_hub.Status> handleFoodRequests(
+    public com.google.common.util.concurrent.ListenableFuture<grpc.smart_hub.StatusResponse> handleFoodRequests(
         grpc.smart_hub.FoodRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getHandleFoodRequestsMethod(), getCallOptions()), request);
@@ -337,7 +337,7 @@ public final class SmartHubServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<grpc.smart_hub.Status> statusUpdate(
+    public com.google.common.util.concurrent.ListenableFuture<grpc.smart_hub.StatusResponse> statusUpdate(
         grpc.smart_hub.StatusRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getStatusUpdateMethod(), getCallOptions()), request);
@@ -367,15 +367,15 @@ public final class SmartHubServiceGrpc {
       switch (methodId) {
         case METHODID_HANDLE_FOOD_REQUESTS:
           serviceImpl.handleFoodRequests((grpc.smart_hub.FoodRequest) request,
-              (io.grpc.stub.StreamObserver<grpc.smart_hub.Status>) responseObserver);
+              (io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse>) responseObserver);
           break;
         case METHODID_STATUS_UPDATE:
           serviceImpl.statusUpdate((grpc.smart_hub.StatusRequest) request,
-              (io.grpc.stub.StreamObserver<grpc.smart_hub.Status>) responseObserver);
+              (io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse>) responseObserver);
           break;
         case METHODID_GET_ALL_STATUS:
           serviceImpl.getAllStatus((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<grpc.smart_hub.Status>) responseObserver);
+              (io.grpc.stub.StreamObserver<grpc.smart_hub.StatusResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();

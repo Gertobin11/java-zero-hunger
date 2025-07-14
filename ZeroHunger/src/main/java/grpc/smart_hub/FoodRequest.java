@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private FoodRequest() {
     items_ = java.util.Collections.emptyList();
-    requestId_ = 0;
   }
 
   @java.lang.Override
@@ -64,11 +63,6 @@ private static final long serialVersionUID = 0L;
               destination_ = subBuilder.buildPartial();
             }
 
-            break;
-          }
-          case 24: {
-
-            requestId_ = input.readInt32();
             break;
           }
           default: {
@@ -183,15 +177,6 @@ private static final long serialVersionUID = 0L;
     return getDestination();
   }
 
-  public static final int REQUEST_ID_FIELD_NUMBER = 3;
-  private int requestId_;
-  /**
-   * <code>int32 request_id = 3;</code>
-   */
-  public int getRequestId() {
-    return requestId_;
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -212,9 +197,6 @@ private static final long serialVersionUID = 0L;
     if (destination_ != null) {
       output.writeMessage(2, getDestination());
     }
-    if (requestId_ != 0) {
-      output.writeInt32(3, requestId_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -231,10 +213,6 @@ private static final long serialVersionUID = 0L;
     if (destination_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getDestination());
-    }
-    if (requestId_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, requestId_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -259,8 +237,6 @@ private static final long serialVersionUID = 0L;
       result = result && getDestination()
           .equals(other.getDestination());
     }
-    result = result && (getRequestId()
-        == other.getRequestId());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -280,8 +256,6 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
       hash = (53 * hash) + getDestination().hashCode();
     }
-    hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getRequestId();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -428,8 +402,6 @@ private static final long serialVersionUID = 0L;
         destination_ = null;
         destinationBuilder_ = null;
       }
-      requestId_ = 0;
-
       return this;
     }
 
@@ -472,7 +444,6 @@ private static final long serialVersionUID = 0L;
       } else {
         result.destination_ = destinationBuilder_.build();
       }
-      result.requestId_ = requestId_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -550,9 +521,6 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasDestination()) {
         mergeDestination(other.getDestination());
-      }
-      if (other.getRequestId() != 0) {
-        setRequestId(other.getRequestId());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1011,32 +979,6 @@ private static final long serialVersionUID = 0L;
         destination_ = null;
       }
       return destinationBuilder_;
-    }
-
-    private int requestId_ ;
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public int getRequestId() {
-      return requestId_;
-    }
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public Builder setRequestId(int value) {
-      
-      requestId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public Builder clearRequestId() {
-      
-      requestId_ = 0;
-      onChanged();
-      return this;
     }
     @java.lang.Override
     public final Builder setUnknownFields(
