@@ -56,7 +56,7 @@ public class FoodSource extends FoodSourceServiceImplBase {
 
         for (FoodItemQuantity availableFoodItem : availableFoodItems) {
             responseObserver.onNext(availableFoodItem);
-
+            // introduce a sleep to mimic database look up
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
