@@ -11,5 +11,5 @@ option java_multiple_files = true;
 // The food source service contains a mapping of addresses that contain items available 
 service FoodSourceService {
   // takes an argument of address and streams the items at that address
-  rpc StreamAvailableFoodItems(common.Address) returns (stream common.FoodItem);
+  rpc StreamAvailableFoodItems(common.Address) returns (stream common.FoodItemQuantity);
 }

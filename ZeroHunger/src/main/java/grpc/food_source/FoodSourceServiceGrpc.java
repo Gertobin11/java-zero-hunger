@@ -31,21 +31,21 @@ public final class FoodSourceServiceGrpc {
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<grpc.common.Address,
-      grpc.common.FoodItem> getStreamAvailableFoodItemsMethod;
+      grpc.common.FoodItemQuantity> getStreamAvailableFoodItemsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "StreamAvailableFoodItems",
       requestType = grpc.common.Address.class,
-      responseType = grpc.common.FoodItem.class,
+      responseType = grpc.common.FoodItemQuantity.class,
       methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<grpc.common.Address,
-      grpc.common.FoodItem> getStreamAvailableFoodItemsMethod() {
-    io.grpc.MethodDescriptor<grpc.common.Address, grpc.common.FoodItem> getStreamAvailableFoodItemsMethod;
+      grpc.common.FoodItemQuantity> getStreamAvailableFoodItemsMethod() {
+    io.grpc.MethodDescriptor<grpc.common.Address, grpc.common.FoodItemQuantity> getStreamAvailableFoodItemsMethod;
     if ((getStreamAvailableFoodItemsMethod = FoodSourceServiceGrpc.getStreamAvailableFoodItemsMethod) == null) {
       synchronized (FoodSourceServiceGrpc.class) {
         if ((getStreamAvailableFoodItemsMethod = FoodSourceServiceGrpc.getStreamAvailableFoodItemsMethod) == null) {
           FoodSourceServiceGrpc.getStreamAvailableFoodItemsMethod = getStreamAvailableFoodItemsMethod = 
-              io.grpc.MethodDescriptor.<grpc.common.Address, grpc.common.FoodItem>newBuilder()
+              io.grpc.MethodDescriptor.<grpc.common.Address, grpc.common.FoodItemQuantity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "food_source.FoodSourceService", "StreamAvailableFoodItems"))
@@ -53,7 +53,7 @@ public final class FoodSourceServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.common.Address.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  grpc.common.FoodItem.getDefaultInstance()))
+                  grpc.common.FoodItemQuantity.getDefaultInstance()))
                   .setSchemaDescriptor(new FoodSourceServiceMethodDescriptorSupplier("StreamAvailableFoodItems"))
                   .build();
           }
@@ -98,7 +98,7 @@ public final class FoodSourceServiceGrpc {
      * </pre>
      */
     public void streamAvailableFoodItems(grpc.common.Address request,
-        io.grpc.stub.StreamObserver<grpc.common.FoodItem> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.common.FoodItemQuantity> responseObserver) {
       asyncUnimplementedUnaryCall(getStreamAvailableFoodItemsMethod(), responseObserver);
     }
 
@@ -109,7 +109,7 @@ public final class FoodSourceServiceGrpc {
             asyncServerStreamingCall(
               new MethodHandlers<
                 grpc.common.Address,
-                grpc.common.FoodItem>(
+                grpc.common.FoodItemQuantity>(
                   this, METHODID_STREAM_AVAILABLE_FOOD_ITEMS)))
           .build();
     }
@@ -142,7 +142,7 @@ public final class FoodSourceServiceGrpc {
      * </pre>
      */
     public void streamAvailableFoodItems(grpc.common.Address request,
-        io.grpc.stub.StreamObserver<grpc.common.FoodItem> responseObserver) {
+        io.grpc.stub.StreamObserver<grpc.common.FoodItemQuantity> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getStreamAvailableFoodItemsMethod(), getCallOptions()), request, responseObserver);
     }
@@ -174,7 +174,7 @@ public final class FoodSourceServiceGrpc {
      * takes an argument of address and streams the items at that address
      * </pre>
      */
-    public java.util.Iterator<grpc.common.FoodItem> streamAvailableFoodItems(
+    public java.util.Iterator<grpc.common.FoodItemQuantity> streamAvailableFoodItems(
         grpc.common.Address request) {
       return blockingServerStreamingCall(
           getChannel(), getStreamAvailableFoodItemsMethod(), getCallOptions(), request);
@@ -224,7 +224,7 @@ public final class FoodSourceServiceGrpc {
       switch (methodId) {
         case METHODID_STREAM_AVAILABLE_FOOD_ITEMS:
           serviceImpl.streamAvailableFoodItems((grpc.common.Address) request,
-              (io.grpc.stub.StreamObserver<grpc.common.FoodItem>) responseObserver);
+              (io.grpc.stub.StreamObserver<grpc.common.FoodItemQuantity>) responseObserver);
           break;
         default:
           throw new AssertionError();

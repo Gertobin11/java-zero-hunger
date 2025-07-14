@@ -63,9 +63,4 @@ public interface FoodRequestOrBuilder extends
    * <code>.common.Address destination = 2;</code>
    */
   grpc.common.AddressOrBuilder getDestinationOrBuilder();
-
-  /**
-   * <code>int32 request_id = 3;</code>
-   */
-  int getRequestId();
 }
