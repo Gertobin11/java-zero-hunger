@@ -38,15 +38,43 @@ public class FoodSource extends FoodSourceServiceImplBase {
         server.awaitTermination();
     }
 
+    /**
+     * A method that returns an array list of FoodItemQunatity items 
+     * that match the passed address
+     * @param address an instance of an Address, with a location String and an eircode String
+     * @param responseObserver what we send back to the client i.e a stream of foodItemQuantities
+     */
     @Override
-    public void streamAvailableFoodItems(Address address, StreamObserver<FoodItem> responseObserver) {
+    public void streamAvailableFoodItems(Address address, StreamObserver<FoodItemQuantity> responseObserver) {
+        System.out.println("Received request for available food items at eircode: " + address.getEircode());
+        // get the dummy data
+        Map<String, List<FoodItemQuantity>> dummyData = generateDummyData();
+        // get the eircode, which acts as the key in the map
+        String eircode = address.getEircode();
+        // get the list of available food items at the eircode
+        List<FoodItemQuantity> availableFoodItems = dummyData.get(eircode);
 
+        for (FoodItemQuantity availableFoodItem : availableFoodItems) {
+            responseObserver.onNext(availableFoodItem);
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        responseObserver.onCompleted();
+
+        System.out.println(
+                "Finished listing available items at: " + address.getEircode());
     }
 
     /**
-     * Function that will generate dummy data that mocks the data sent from the smart inventory 
-     * in supermarkets etc..
-     * @return a map with an eircode and an array of foodItemQuantity objects at that location
+     * Function that will generate dummy data that mocks the data sent from the
+     * smart inventory in supermarkets etc..
+     *
+     * @return a map with an eircode and an array of foodItemQuantity objects at
+     * that location
      */
     private static Map<String, List<FoodItemQuantity>> generateDummyData() {
         // create an empty map

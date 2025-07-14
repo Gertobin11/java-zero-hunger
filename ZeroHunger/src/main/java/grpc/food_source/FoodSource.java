@@ -24,10 +24,10 @@ public final class FoodSource {
   static {
     java.lang.String[] descriptorData = {
       "\n\021food_source.proto\022\013food_source\032\014common" +
-      ".proto2T\n\021FoodSourceService\022?\n\030StreamAva" +
-      "ilableFoodItems\022\017.common.Address\032\020.commo" +
-      "n.FoodItem0\001B\024\n\020grpc.food_sourceP\001b\006prot" +
-      "o3"
+      ".proto2\\\n\021FoodSourceService\022G\n\030StreamAva" +
+      "ilableFoodItems\022\017.common.Address\032\030.commo" +
+      "n.FoodItemQuantity0\001B\024\n\020grpc.food_source" +
+      "P\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
