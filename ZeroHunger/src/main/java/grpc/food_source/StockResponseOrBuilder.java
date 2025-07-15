@@ -8,25 +8,26 @@ public interface StockResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  boolean hasAddress();
+  java.util.List<grpc.food_source.Stock> 
+      getStockList();
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  grpc.common.Address getAddress();
+  grpc.food_source.Stock getStock(int index);
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  grpc.common.AddressOrBuilder getAddressOrBuilder();
-
+  int getStockCount();
   /**
-   * <code>bool instock = 2;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  boolean getInstock();
-
+  java.util.List<? extends grpc.food_source.StockOrBuilder> 
+      getStockOrBuilderList();
   /**
-   * <code>int32 request_id = 3;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  int getRequestId();
+  grpc.food_source.StockOrBuilder getStockOrBuilder(
+      int index);
 }

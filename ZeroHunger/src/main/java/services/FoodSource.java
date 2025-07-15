@@ -10,7 +10,9 @@ import grpc.common.FoodItemQuantity;
 import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
 import grpc.food_source.FoodSourceServiceGrpc.FoodSourceServiceImplBase;
+import grpc.food_source.Stock;
 import grpc.food_source.StockResponse;
+import grpc.food_source.StockResponse.Builder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -79,16 +81,21 @@ public class FoodSource extends FoodSourceServiceImplBase {
                 "Finished listing available items at: " + address.getEircode());
     }
 
+    /**
+     * Method that receives a stream of requested food items, checks if it is in
+     * stock in each location and returns a message of request ids to locations
+     * if it is in stock
+     *
+     * @param responseObserver used to return the message to the client
+     * @return an array of locations with food item request id if it is in stock
+     */
     @Override
     public StreamObserver<SavedFoodRequest> checkIfFoodRequestIsInStock(StreamObserver<StockResponse> responseObserver) {
         System.out.println("Started receiving requests for stock ");
+        // crate a builder that we can add to on every message received if a request is in stock
+        Builder builder = StockResponse.newBuilder();
 
         return new StreamObserver<SavedFoodRequest>() {
-            // we will populate these if a store has the matching requested items
-            private String storeWithStock = null;
-            private int inStockRequestID = 0;
-            private boolean requestInStock = false;
-
             // generate dummy data to handle the request
             Map<String, List<FoodItemQuantity>> dummyData = generateDummyData();
 
@@ -128,10 +135,19 @@ public class FoodSource extends FoodSourceServiceImplBase {
                         }
                     }
                     if (inStock) {
+                        Address address = Address.newBuilder().
+                                setAddress("").
+                                setEircode(eircode).
+                                build();
+
                         // if it is in stock we save the eircode of where it is in stock with the request id and break out of the loop
-                        storeWithStock = eircode;
-                        requestInStock = true;
-                        inStockRequestID = savedFoodRequest.getRequestId();
+                        Stock stock = Stock.newBuilder().
+                                setAddress(address).
+                                setRequestId(savedFoodRequest.getRequestId()).
+                                setInstock(true).
+                                build();
+                        builder.addStock(stock);
+
                         break;
                     }
                 }
@@ -145,23 +161,12 @@ public class FoodSource extends FoodSourceServiceImplBase {
 
             @Override
             public void onCompleted() {
-                // build the address of the store that has the stock 
-                Address address = Address.newBuilder().
-                        setAddress("").
-                        setEircode(storeWithStock).
-                        build();
-                
-                // create the response message
-                StockResponse response = StockResponse.newBuilder().
-                        setAddress(address).
-                        setInstock(requestInStock).
-                        setRequestId(inStockRequestID).
-                        build();
+                // build the message that we have been building up on the on next call
+                StockResponse response = builder.build();
                 // call the onNext on the responseObserver to send the message
                 responseObserver.onNext(response);
                 responseObserver.onCompleted();
             }
-
         };
     }
 

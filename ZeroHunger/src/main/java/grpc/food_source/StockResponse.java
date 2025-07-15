@@ -16,8 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private StockResponse() {
-    instock_ = false;
-    requestId_ = 0;
+    stock_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -45,26 +44,12 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            grpc.common.Address.Builder subBuilder = null;
-            if (address_ != null) {
-              subBuilder = address_.toBuilder();
+            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+              stock_ = new java.util.ArrayList<grpc.food_source.Stock>();
+              mutable_bitField0_ |= 0x00000001;
             }
-            address_ = input.readMessage(grpc.common.Address.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(address_);
-              address_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 16: {
-
-            instock_ = input.readBool();
-            break;
-          }
-          case 24: {
-
-            requestId_ = input.readInt32();
+            stock_.add(
+                input.readMessage(grpc.food_source.Stock.parser(), extensionRegistry));
             break;
           }
           default: {
@@ -82,6 +67,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+        stock_ = java.util.Collections.unmodifiableList(stock_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -99,43 +87,39 @@ private static final long serialVersionUID = 0L;
             grpc.food_source.StockResponse.class, grpc.food_source.StockResponse.Builder.class);
   }
 
-  public static final int ADDRESS_FIELD_NUMBER = 1;
-  private grpc.common.Address address_;
+  public static final int STOCK_FIELD_NUMBER = 1;
+  private java.util.List<grpc.food_source.Stock> stock_;
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  public boolean hasAddress() {
-    return address_ != null;
+  public java.util.List<grpc.food_source.Stock> getStockList() {
+    return stock_;
   }
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  public grpc.common.Address getAddress() {
-    return address_ == null ? grpc.common.Address.getDefaultInstance() : address_;
+  public java.util.List<? extends grpc.food_source.StockOrBuilder> 
+      getStockOrBuilderList() {
+    return stock_;
   }
   /**
-   * <code>.common.Address address = 1;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  public grpc.common.AddressOrBuilder getAddressOrBuilder() {
-    return getAddress();
+  public int getStockCount() {
+    return stock_.size();
   }
-
-  public static final int INSTOCK_FIELD_NUMBER = 2;
-  private boolean instock_;
   /**
-   * <code>bool instock = 2;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  public boolean getInstock() {
-    return instock_;
+  public grpc.food_source.Stock getStock(int index) {
+    return stock_.get(index);
   }
-
-  public static final int REQUEST_ID_FIELD_NUMBER = 3;
-  private int requestId_;
   /**
-   * <code>int32 request_id = 3;</code>
+   * <code>repeated .food_source.Stock stock = 1;</code>
    */
-  public int getRequestId() {
-    return requestId_;
+  public grpc.food_source.StockOrBuilder getStockOrBuilder(
+      int index) {
+    return stock_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -152,14 +136,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (address_ != null) {
-      output.writeMessage(1, getAddress());
-    }
-    if (instock_ != false) {
-      output.writeBool(2, instock_);
-    }
-    if (requestId_ != 0) {
-      output.writeInt32(3, requestId_);
+    for (int i = 0; i < stock_.size(); i++) {
+      output.writeMessage(1, stock_.get(i));
     }
     unknownFields.writeTo(output);
   }
@@ -170,17 +148,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (address_ != null) {
+    for (int i = 0; i < stock_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getAddress());
-    }
-    if (instock_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(2, instock_);
-    }
-    if (requestId_ != 0) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, requestId_);
+        .computeMessageSize(1, stock_.get(i));
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -198,15 +168,8 @@ private static final long serialVersionUID = 0L;
     grpc.food_source.StockResponse other = (grpc.food_source.StockResponse) obj;
 
     boolean result = true;
-    result = result && (hasAddress() == other.hasAddress());
-    if (hasAddress()) {
-      result = result && getAddress()
-          .equals(other.getAddress());
-    }
-    result = result && (getInstock()
-        == other.getInstock());
-    result = result && (getRequestId()
-        == other.getRequestId());
+    result = result && getStockList()
+        .equals(other.getStockList());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -218,15 +181,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasAddress()) {
-      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
-      hash = (53 * hash) + getAddress().hashCode();
+    if (getStockCount() > 0) {
+      hash = (37 * hash) + STOCK_FIELD_NUMBER;
+      hash = (53 * hash) + getStockList().hashCode();
     }
-    hash = (37 * hash) + INSTOCK_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getInstock());
-    hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
-    hash = (53 * hash) + getRequestId();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -355,21 +313,18 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getStockFieldBuilder();
       }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (addressBuilder_ == null) {
-        address_ = null;
+      if (stockBuilder_ == null) {
+        stock_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
-        address_ = null;
-        addressBuilder_ = null;
+        stockBuilder_.clear();
       }
-      instock_ = false;
-
-      requestId_ = 0;
-
       return this;
     }
 
@@ -396,13 +351,16 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public grpc.food_source.StockResponse buildPartial() {
       grpc.food_source.StockResponse result = new grpc.food_source.StockResponse(this);
-      if (addressBuilder_ == null) {
-        result.address_ = address_;
+      int from_bitField0_ = bitField0_;
+      if (stockBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          stock_ = java.util.Collections.unmodifiableList(stock_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.stock_ = stock_;
       } else {
-        result.address_ = addressBuilder_.build();
+        result.stock_ = stockBuilder_.build();
       }
-      result.instock_ = instock_;
-      result.requestId_ = requestId_;
       onBuilt();
       return result;
     }
@@ -451,14 +409,31 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(grpc.food_source.StockResponse other) {
       if (other == grpc.food_source.StockResponse.getDefaultInstance()) return this;
-      if (other.hasAddress()) {
-        mergeAddress(other.getAddress());
-      }
-      if (other.getInstock() != false) {
-        setInstock(other.getInstock());
-      }
-      if (other.getRequestId() != 0) {
-        setRequestId(other.getRequestId());
+      if (stockBuilder_ == null) {
+        if (!other.stock_.isEmpty()) {
+          if (stock_.isEmpty()) {
+            stock_ = other.stock_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureStockIsMutable();
+            stock_.addAll(other.stock_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.stock_.isEmpty()) {
+          if (stockBuilder_.isEmpty()) {
+            stockBuilder_.dispose();
+            stockBuilder_ = null;
+            stock_ = other.stock_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            stockBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getStockFieldBuilder() : null;
+          } else {
+            stockBuilder_.addAllMessages(other.stock_);
+          }
+        }
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -488,174 +463,246 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private grpc.common.Address address_ = null;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        grpc.common.Address, grpc.common.Address.Builder, grpc.common.AddressOrBuilder> addressBuilder_;
-    /**
-     * <code>.common.Address address = 1;</code>
-     */
-    public boolean hasAddress() {
-      return addressBuilder_ != null || address_ != null;
+    private java.util.List<grpc.food_source.Stock> stock_ =
+      java.util.Collections.emptyList();
+    private void ensureStockIsMutable() {
+      if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+        stock_ = new java.util.ArrayList<grpc.food_source.Stock>(stock_);
+        bitField0_ |= 0x00000001;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        grpc.food_source.Stock, grpc.food_source.Stock.Builder, grpc.food_source.StockOrBuilder> stockBuilder_;
+
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public grpc.common.Address getAddress() {
-      if (addressBuilder_ == null) {
-        return address_ == null ? grpc.common.Address.getDefaultInstance() : address_;
+    public java.util.List<grpc.food_source.Stock> getStockList() {
+      if (stockBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(stock_);
       } else {
-        return addressBuilder_.getMessage();
+        return stockBuilder_.getMessageList();
       }
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public Builder setAddress(grpc.common.Address value) {
-      if (addressBuilder_ == null) {
+    public int getStockCount() {
+      if (stockBuilder_ == null) {
+        return stock_.size();
+      } else {
+        return stockBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public grpc.food_source.Stock getStock(int index) {
+      if (stockBuilder_ == null) {
+        return stock_.get(index);
+      } else {
+        return stockBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public Builder setStock(
+        int index, grpc.food_source.Stock value) {
+      if (stockBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        address_ = value;
+        ensureStockIsMutable();
+        stock_.set(index, value);
         onChanged();
       } else {
-        addressBuilder_.setMessage(value);
+        stockBuilder_.setMessage(index, value);
       }
-
       return this;
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public Builder setAddress(
-        grpc.common.Address.Builder builderForValue) {
-      if (addressBuilder_ == null) {
-        address_ = builderForValue.build();
+    public Builder setStock(
+        int index, grpc.food_source.Stock.Builder builderForValue) {
+      if (stockBuilder_ == null) {
+        ensureStockIsMutable();
+        stock_.set(index, builderForValue.build());
         onChanged();
       } else {
-        addressBuilder_.setMessage(builderForValue.build());
+        stockBuilder_.setMessage(index, builderForValue.build());
       }
-
       return this;
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public Builder mergeAddress(grpc.common.Address value) {
-      if (addressBuilder_ == null) {
-        if (address_ != null) {
-          address_ =
-            grpc.common.Address.newBuilder(address_).mergeFrom(value).buildPartial();
-        } else {
-          address_ = value;
+    public Builder addStock(grpc.food_source.Stock value) {
+      if (stockBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureStockIsMutable();
+        stock_.add(value);
         onChanged();
       } else {
-        addressBuilder_.mergeFrom(value);
+        stockBuilder_.addMessage(value);
       }
-
       return this;
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public Builder clearAddress() {
-      if (addressBuilder_ == null) {
-        address_ = null;
+    public Builder addStock(
+        int index, grpc.food_source.Stock value) {
+      if (stockBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureStockIsMutable();
+        stock_.add(index, value);
         onChanged();
       } else {
-        address_ = null;
-        addressBuilder_ = null;
+        stockBuilder_.addMessage(index, value);
       }
-
       return this;
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public grpc.common.Address.Builder getAddressBuilder() {
-      
-      onChanged();
-      return getAddressFieldBuilder().getBuilder();
+    public Builder addStock(
+        grpc.food_source.Stock.Builder builderForValue) {
+      if (stockBuilder_ == null) {
+        ensureStockIsMutable();
+        stock_.add(builderForValue.build());
+        onChanged();
+      } else {
+        stockBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    public grpc.common.AddressOrBuilder getAddressOrBuilder() {
-      if (addressBuilder_ != null) {
-        return addressBuilder_.getMessageOrBuilder();
+    public Builder addStock(
+        int index, grpc.food_source.Stock.Builder builderForValue) {
+      if (stockBuilder_ == null) {
+        ensureStockIsMutable();
+        stock_.add(index, builderForValue.build());
+        onChanged();
       } else {
-        return address_ == null ?
-            grpc.common.Address.getDefaultInstance() : address_;
+        stockBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public Builder addAllStock(
+        java.lang.Iterable<? extends grpc.food_source.Stock> values) {
+      if (stockBuilder_ == null) {
+        ensureStockIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, stock_);
+        onChanged();
+      } else {
+        stockBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public Builder clearStock() {
+      if (stockBuilder_ == null) {
+        stock_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+      } else {
+        stockBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public Builder removeStock(int index) {
+      if (stockBuilder_ == null) {
+        ensureStockIsMutable();
+        stock_.remove(index);
+        onChanged();
+      } else {
+        stockBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public grpc.food_source.Stock.Builder getStockBuilder(
+        int index) {
+      return getStockFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public grpc.food_source.StockOrBuilder getStockOrBuilder(
+        int index) {
+      if (stockBuilder_ == null) {
+        return stock_.get(index);  } else {
+        return stockBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>.common.Address address = 1;</code>
+     * <code>repeated .food_source.Stock stock = 1;</code>
      */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        grpc.common.Address, grpc.common.Address.Builder, grpc.common.AddressOrBuilder> 
-        getAddressFieldBuilder() {
-      if (addressBuilder_ == null) {
-        addressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            grpc.common.Address, grpc.common.Address.Builder, grpc.common.AddressOrBuilder>(
-                getAddress(),
+    public java.util.List<? extends grpc.food_source.StockOrBuilder> 
+         getStockOrBuilderList() {
+      if (stockBuilder_ != null) {
+        return stockBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(stock_);
+      }
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public grpc.food_source.Stock.Builder addStockBuilder() {
+      return getStockFieldBuilder().addBuilder(
+          grpc.food_source.Stock.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public grpc.food_source.Stock.Builder addStockBuilder(
+        int index) {
+      return getStockFieldBuilder().addBuilder(
+          index, grpc.food_source.Stock.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .food_source.Stock stock = 1;</code>
+     */
+    public java.util.List<grpc.food_source.Stock.Builder> 
+         getStockBuilderList() {
+      return getStockFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        grpc.food_source.Stock, grpc.food_source.Stock.Builder, grpc.food_source.StockOrBuilder> 
+        getStockFieldBuilder() {
+      if (stockBuilder_ == null) {
+        stockBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            grpc.food_source.Stock, grpc.food_source.Stock.Builder, grpc.food_source.StockOrBuilder>(
+                stock_,
+                ((bitField0_ & 0x00000001) == 0x00000001),
                 getParentForChildren(),
                 isClean());
-        address_ = null;
+        stock_ = null;
       }
-      return addressBuilder_;
-    }
-
-    private boolean instock_ ;
-    /**
-     * <code>bool instock = 2;</code>
-     */
-    public boolean getInstock() {
-      return instock_;
-    }
-    /**
-     * <code>bool instock = 2;</code>
-     */
-    public Builder setInstock(boolean value) {
-      
-      instock_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>bool instock = 2;</code>
-     */
-    public Builder clearInstock() {
-      
-      instock_ = false;
-      onChanged();
-      return this;
-    }
-
-    private int requestId_ ;
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public int getRequestId() {
-      return requestId_;
-    }
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public Builder setRequestId(int value) {
-      
-      requestId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int32 request_id = 3;</code>
-     */
-    public Builder clearRequestId() {
-      
-      requestId_ = 0;
-      onChanged();
-      return this;
+      return stockBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

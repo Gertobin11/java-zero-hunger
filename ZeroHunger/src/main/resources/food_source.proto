@@ -15,8 +15,12 @@ service FoodSourceService {
   rpc checkIfFoodRequestIsInStock(stream common.SavedFoodRequest) returns (StockResponse);
 }
 
-  message StockResponse {
+message Stock {
     common.Address address = 1;
     bool instock = 2;
     int32 request_id = 3;
+}
+
+message StockResponse {
+    repeated Stock stock = 1;
 }

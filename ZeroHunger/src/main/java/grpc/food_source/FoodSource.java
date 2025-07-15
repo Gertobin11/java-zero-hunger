@@ -15,6 +15,11 @@ public final class FoodSource {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_food_source_Stock_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_food_source_Stock_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_food_source_StockResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -29,14 +34,15 @@ public final class FoodSource {
   static {
     java.lang.String[] descriptorData = {
       "\n\021food_source.proto\022\013food_source\032\014common" +
-      ".proto\"V\n\rStockResponse\022 \n\007address\030\001 \001(\013" +
-      "2\017.common.Address\022\017\n\007instock\030\002 \001(\010\022\022\n\nre" +
-      "quest_id\030\003 \001(\0052\263\001\n\021FoodSourceService\022G\n\030" +
-      "streamAvailableFoodItems\022\017.common.Addres" +
-      "s\032\030.common.FoodItemQuantity0\001\022U\n\033checkIf" +
-      "FoodRequestIsInStock\022\030.common.SavedFoodR" +
-      "equest\032\032.food_source.StockResponse(\001B\024\n\020" +
-      "grpc.food_sourceP\001b\006proto3"
+      ".proto\"N\n\005Stock\022 \n\007address\030\001 \001(\0132\017.commo" +
+      "n.Address\022\017\n\007instock\030\002 \001(\010\022\022\n\nrequest_id" +
+      "\030\003 \001(\005\"2\n\rStockResponse\022!\n\005stock\030\001 \003(\0132\022" +
+      ".food_source.Stock2\263\001\n\021FoodSourceService" +
+      "\022G\n\030streamAvailableFoodItems\022\017.common.Ad" +
+      "dress\032\030.common.FoodItemQuantity0\001\022U\n\033che" +
+      "ckIfFoodRequestIsInStock\022\030.common.SavedF" +
+      "oodRequest\032\032.food_source.StockResponse(\001" +
+      "B\024\n\020grpc.food_sourceP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -51,12 +57,18 @@ public final class FoodSource {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           grpc.common.Common.getDescriptor(),
         }, assigner);
-    internal_static_food_source_StockResponse_descriptor =
+    internal_static_food_source_Stock_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_food_source_Stock_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_food_source_Stock_descriptor,
+        new java.lang.String[] { "Address", "Instock", "RequestId", });
+    internal_static_food_source_StockResponse_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_food_source_StockResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_food_source_StockResponse_descriptor,
-        new java.lang.String[] { "Address", "Instock", "RequestId", });
+        new java.lang.String[] { "Stock", });
     grpc.common.Common.getDescriptor();
   }
 
