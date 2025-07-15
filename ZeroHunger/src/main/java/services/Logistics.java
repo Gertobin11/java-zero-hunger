@@ -29,17 +29,18 @@ public class Logistics extends LogisticsServiceImplBase {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        // create the logistics instance
         Logistics mainLogistics = new Logistics();
-
-        int port = 50053;
-
-        Server server = ServerBuilder.forPort(port).
+        
+        // create te server put 0 to get dynamically alotted port
+        Server server = ServerBuilder.forPort(0).
                 addService(mainLogistics).
                 build().
                 start();
 
         System.out.
-                println("Main Logistics Service started, listening on " + port);
+                println("Main Logistics Service started, listening on " + server.
+                        getPort());
 
         server.awaitTermination();
     }
@@ -144,7 +145,6 @@ public class Logistics extends LogisticsServiceImplBase {
 
                     // we stream the current location to the caller
                     responseObserver.onNext(location);
-
                 }
             }
 

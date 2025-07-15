@@ -17,6 +17,10 @@ service SmartHubService {
   // No parameters are needed for this method so we use the default
   // google.protobuf.Empty to show this
   rpc getAllStatus(google.protobuf.Empty) returns (stream StatusResponse);
+
+  // this method is for triggering internal communications between services
+  // to facilitate deliveries
+  rpc triggerChecks(google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message StatusRequest {

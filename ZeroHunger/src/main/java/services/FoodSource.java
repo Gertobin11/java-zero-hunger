@@ -30,16 +30,16 @@ import java.util.Optional;
 public class FoodSource extends FoodSourceServiceImplBase {
 
     public static void main(String[] args) throws InterruptedException, IOException {
+        // create the food source instance
         FoodSource mainFoodSource = new FoodSource();
-
-        int port = 50051;
-
-        Server server = ServerBuilder.forPort(port).
+        
+        // create te server put 0 to get dynamically alotted port
+        Server server = ServerBuilder.forPort(0).
                 addService(mainFoodSource).
                 build().
                 start();
 
-        System.out.println("Main Food Source started, listening on " + port);
+        System.out.println("Main Food Source started, listening on " + server.getPort());
 
         server.awaitTermination();
     }
