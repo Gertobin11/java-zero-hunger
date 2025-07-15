@@ -53,9 +53,9 @@ public final class Logistics {
       "ate\022\023\n\013delivery_id\030\001 \001(\005\"T\n\010Location\022\023\n\013" +
       "delivery_id\030\001 \001(\005\022\021\n\tlongitude\030\002 \001(\t\022\020\n\010" +
       "latitude\030\003 \001(\t\022\016\n\006status\030\004 \001(\t2\242\001\n\020Logis" +
-      "ticsService\022I\n\025HandleDeliveryRequest\022\023.l" +
+      "ticsService\022I\n\025handleDeliveryRequest\022\023.l" +
       "ogistics.Delivery\032\033.logistics.DeliveryRe" +
-      "sponse\022C\n\rTrackDelivery\022\031.logistics.Loca" +
+      "sponse\022C\n\rtrackDelivery\022\031.logistics.Loca" +
       "tionUpdate\032\023.logistics.Location(\0010\001B\022\n\016g" +
       "rpc.logisticsP\001b\006proto3"
     };

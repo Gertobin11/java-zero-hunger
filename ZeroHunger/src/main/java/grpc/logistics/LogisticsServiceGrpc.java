@@ -34,7 +34,7 @@ public final class LogisticsServiceGrpc {
       grpc.logistics.DeliveryResponse> getHandleDeliveryRequestMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "HandleDeliveryRequest",
+      fullMethodName = SERVICE_NAME + '/' + "handleDeliveryRequest",
       requestType = grpc.logistics.Delivery.class,
       responseType = grpc.logistics.DeliveryResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
@@ -48,13 +48,13 @@ public final class LogisticsServiceGrpc {
               io.grpc.MethodDescriptor.<grpc.logistics.Delivery, grpc.logistics.DeliveryResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
-                  "logistics.LogisticsService", "HandleDeliveryRequest"))
+                  "logistics.LogisticsService", "handleDeliveryRequest"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.logistics.Delivery.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.logistics.DeliveryResponse.getDefaultInstance()))
-                  .setSchemaDescriptor(new LogisticsServiceMethodDescriptorSupplier("HandleDeliveryRequest"))
+                  .setSchemaDescriptor(new LogisticsServiceMethodDescriptorSupplier("handleDeliveryRequest"))
                   .build();
           }
         }
@@ -66,7 +66,7 @@ public final class LogisticsServiceGrpc {
       grpc.logistics.Location> getTrackDeliveryMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "TrackDelivery",
+      fullMethodName = SERVICE_NAME + '/' + "trackDelivery",
       requestType = grpc.logistics.LocationUpdate.class,
       responseType = grpc.logistics.Location.class,
       methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
@@ -80,13 +80,13 @@ public final class LogisticsServiceGrpc {
               io.grpc.MethodDescriptor.<grpc.logistics.LocationUpdate, grpc.logistics.Location>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
               .setFullMethodName(generateFullMethodName(
-                  "logistics.LogisticsService", "TrackDelivery"))
+                  "logistics.LogisticsService", "trackDelivery"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.logistics.LocationUpdate.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   grpc.logistics.Location.getDefaultInstance()))
-                  .setSchemaDescriptor(new LogisticsServiceMethodDescriptorSupplier("TrackDelivery"))
+                  .setSchemaDescriptor(new LogisticsServiceMethodDescriptorSupplier("trackDelivery"))
                   .build();
           }
         }

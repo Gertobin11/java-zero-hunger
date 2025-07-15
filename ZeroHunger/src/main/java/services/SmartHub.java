@@ -5,8 +5,8 @@
 package services;
 
 import com.google.protobuf.Empty;
-import grpc.smart_hub.FoodRequest;
-import grpc.smart_hub.SavedFoodRequest;
+import grpc.common.FoodRequest;
+import grpc.common.SavedFoodRequest;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
 import grpc.smart_hub.StatusResponse;
@@ -30,16 +30,13 @@ public class SmartHub extends SmartHubServiceImplBase {
         // create the smart hub instance
         SmartHub smartHub = new SmartHub();
 
-        // listen on a unique (in this distibuted system) port
-        int port = 50052;
-
-        // create te server
-        Server server = ServerBuilder.forPort(port).
+        // create te server put 0 to get dynamically alotted port
+        Server server = ServerBuilder.forPort(0).
                 addService(smartHub).
                 build().
                 start();
 
-        System.out.println("SmartHub server started, listening on " + port);
+        System.out.println("SmartHub server started, listening on " + server.getPort());
 
         server.awaitTermination();
     }

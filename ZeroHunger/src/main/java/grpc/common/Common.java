@@ -29,6 +29,16 @@ public final class Common {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_common_FoodItemQuantity_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_common_SavedFoodRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_common_SavedFoodRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_common_FoodRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_common_FoodRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -42,7 +52,13 @@ public final class Common {
       "\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\"+\n\007Address\022\017\n\007eirco" +
       "de\030\001 \001(\t\022\017\n\007address\030\002 \001(\t\"D\n\020FoodItemQua" +
       "ntity\022\036\n\004item\030\001 \001(\0132\020.common.FoodItem\022\020\n" +
-      "\010quantity\030\002 \001(\005B\017\n\013grpc.commonP\001b\006proto3"
+      "\010quantity\030\002 \001(\005\"\212\001\n\020SavedFoodRequest\022\022\n\n" +
+      "request_id\030\001 \001(\005\022(\n\013foodRequest\030\002 \001(\0132\023." +
+      "common.FoodRequest\022\016\n\006status\030\003 \001(\t\022\023\n\013de" +
+      "livery_id\030\004 \001(\005\022\023\n\013pickup_time\030\005 \001(\t\"\\\n\013" +
+      "FoodRequest\022\'\n\005items\030\001 \003(\0132\030.common.Food" +
+      "ItemQuantity\022$\n\013destination\030\002 \001(\0132\017.comm" +
+      "on.AddressB\017\n\013grpc.commonP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -74,6 +90,18 @@ public final class Common {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_common_FoodItemQuantity_descriptor,
         new java.lang.String[] { "Item", "Quantity", });
+    internal_static_common_SavedFoodRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_common_SavedFoodRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_common_SavedFoodRequest_descriptor,
+        new java.lang.String[] { "RequestId", "FoodRequest", "Status", "DeliveryId", "PickupTime", });
+    internal_static_common_FoodRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_common_FoodRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_common_FoodRequest_descriptor,
+        new java.lang.String[] { "Items", "Destination", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
