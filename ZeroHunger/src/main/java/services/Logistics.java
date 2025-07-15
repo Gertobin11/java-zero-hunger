@@ -4,6 +4,7 @@
  */
 package services;
 
+import dns.ServiceDiscovery;
 import grpc.logistics.Delivery;
 import grpc.logistics.DeliveryResponse;
 import grpc.logistics.Location;
@@ -31,7 +32,7 @@ public class Logistics extends LogisticsServiceImplBase {
 
         // create the logistics instance
         Logistics mainLogistics = new Logistics();
-        
+
         // create te server put 0 to get dynamically alotted port
         Server server = ServerBuilder.forPort(0).
                 addService(mainLogistics).
@@ -41,6 +42,8 @@ public class Logistics extends LogisticsServiceImplBase {
         System.out.
                 println("Main Logistics Service started, listening on " + server.
                         getPort());
+
+        ServiceDiscovery.registerService("logistics", server.getPort());
 
         server.awaitTermination();
     }

@@ -4,6 +4,7 @@
  */
 package services;
 
+import dns.ServiceDiscovery;
 import grpc.common.Address;
 import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
@@ -40,6 +41,8 @@ public class FoodSource extends FoodSourceServiceImplBase {
                 start();
 
         System.out.println("Main Food Source started, listening on " + server.getPort());
+        
+        ServiceDiscovery.registerService("food-source-service", server.getPort());
 
         server.awaitTermination();
     }
