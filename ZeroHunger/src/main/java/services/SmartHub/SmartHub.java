@@ -10,6 +10,7 @@ import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
 import grpc.food_source.FoodSourceServiceGrpc;
 import grpc.food_source.FoodSourceServiceGrpc.FoodSourceServiceStub;
+import grpc.food_source.Stock;
 import grpc.food_source.StockResponse;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
@@ -170,7 +171,16 @@ public class SmartHub extends SmartHubServiceImplBase {
             System.err.println("Unable to get stock response from food service with error: " + e);
             return;
         }
-        System.out.println(stockResponse);
+        // return if no food requests can be delivered
+        if(stockResponse.getStockList().size() < 1) {
+            System.out.println("Currently no Food requests to fulfill");
+            return;
+        }
+        
+        // loop over the list and try to make deliveries
+        for(Stock stock: stockResponse.getStockList()) {
+            
+        }
     }
 
     private ManagedChannel getFoodSourceChannel() {
