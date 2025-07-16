@@ -4,7 +4,7 @@
  */
 package services;
 
-import dns.ServiceDiscovery;
+import dns.ServiceRegistry;
 import grpc.logistics.Delivery;
 import grpc.logistics.DeliveryResponse;
 import grpc.logistics.Location;
@@ -43,7 +43,7 @@ public class Logistics extends LogisticsServiceImplBase {
                 println("Main Logistics Service started, listening on " + server.
                         getPort());
 
-        ServiceDiscovery.registerService("logistics", server.getPort());
+        ServiceRegistry.registerService("logistics", server.getPort());
 
         server.awaitTermination();
     }

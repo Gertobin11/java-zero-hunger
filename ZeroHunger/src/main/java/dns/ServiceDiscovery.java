@@ -6,44 +6,57 @@ package dns;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
+import javax.jmdns.ServiceListener;
 
 /**
  *
  * @author gerto
  */
 public class ServiceDiscovery {
+    // A map to hold the discovered services
+
+    private Map<String, ServiceInfo> discoveredServices = new HashMap<>();
+
+    private class DiscoveryListener implements ServiceListener {
+
+        @Override
+        public void serviceAdded(ServiceEvent event) {
+            event.getDNS().
+                    requestServiceInfo(event.getType(), event.getName(), 1);
+        }
+
+        @Override
+        public void serviceRemoved(ServiceEvent event) {
+            System.out.println("CLIENT: Service removed: " + event.getName());
+            discoveredServices.remove(event.getName());
+        }
+
+        @Override
+        public void serviceResolved(ServiceEvent event) {
+            System.out.println("Service found! Details: " + event.getInfo());
+            discoveredServices.put(event.getName(), event.getInfo());
+        }
+    }
+
+    public void start() throws IOException {
+        JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+        // Add a listener for the general gRPC service type.
+        jmdns.addServiceListener("_grpc._tcp.local.", new DiscoveryListener());
+        System.out.println("Service discovery started.");
+    }
 
     /**
-     * Method that registers the gRPC services with jmDNS
-     * @param serviceName the name of the service being registered
-     * @param port the port on which the service is on
+     * Gets the connection details for the passed service name
+     *
+     * @param serviceName The name of the service
+     * @return The Service if found else null
      */
-    public static void registerService(String serviceName, int port) {
-        try {
-            // Create a JmDNS instance
-            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-            // create the service
-            ServiceInfo serviceInfo = ServiceInfo.
-                    create("_grpc._tcp.local.", serviceName, port, serviceName + " gRPC service");
-
-            // Register the service.
-            jmdns.registerService(serviceInfo);
-
-            System.out.
-                    println("jmDNS: Service " + serviceName + " registered on port " + port);
-
-            // Add a shutdown hook to unregister the service gracefully.
-            Runtime.getRuntime().
-                    addShutdownHook(new Thread(() -> {
-                        System.out.
-                                println("jmDNS: Unregistering all services...");
-                        jmdns.unregisterAllServices();
-                    }));
-
-        } catch (IOException e) {
-            System.err.println("jmDNS: Error registering service.");
-        }
+    public ServiceInfo findService(String serviceName) {
+        return discoveredServices.get(serviceName);
     }
 }

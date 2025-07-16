@@ -5,7 +5,7 @@
 package services;
 
 import com.google.protobuf.Empty;
-import dns.ServiceDiscovery;
+import dns.ServiceRegistry;
 import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
@@ -39,7 +39,7 @@ public class SmartHub extends SmartHubServiceImplBase {
 
         System.out.println("SmartHub server started, listening on " + server.getPort());
          
-        ServiceDiscovery.registerService("smart-hub-service", server.getPort());
+        ServiceRegistry.registerService("smart-hub-service", server.getPort());
 
         server.awaitTermination();
     }
