@@ -28,26 +28,6 @@ public class Logistics extends LogisticsServiceImplBase {
 
     List<Integer> acceptedDeliveries = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-        // create the logistics instance
-        Logistics mainLogistics = new Logistics();
-
-        // create te server put 0 to get dynamically alotted port
-        Server server = ServerBuilder.forPort(0).
-                addService(mainLogistics).
-                build().
-                start();
-
-        System.out.
-                println("Main Logistics Service started, listening on " + server.
-                        getPort());
-
-        ServiceRegistry.registerService("logistics", server.getPort());
-
-        server.awaitTermination();
-    }
-
     /**
      * Method that accepts and rejects requests for delivery
      *
