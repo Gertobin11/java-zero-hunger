@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package services;
+package services.Logistics;
 
+import dns.ServiceRegistry;
 import grpc.logistics.Delivery;
 import grpc.logistics.DeliveryResponse;
 import grpc.logistics.Location;
@@ -31,7 +32,7 @@ public class Logistics extends LogisticsServiceImplBase {
 
         // create the logistics instance
         Logistics mainLogistics = new Logistics();
-        
+
         // create te server put 0 to get dynamically alotted port
         Server server = ServerBuilder.forPort(0).
                 addService(mainLogistics).
@@ -41,6 +42,8 @@ public class Logistics extends LogisticsServiceImplBase {
         System.out.
                 println("Main Logistics Service started, listening on " + server.
                         getPort());
+
+        ServiceRegistry.registerService("logistics", server.getPort());
 
         server.awaitTermination();
     }

@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package services;
+package services.FoodSource;
 
+import dns.ServiceRegistry;
 import grpc.common.Address;
 import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
@@ -40,6 +41,8 @@ public class FoodSource extends FoodSourceServiceImplBase {
                 start();
 
         System.out.println("Main Food Source started, listening on " + server.getPort());
+        
+        ServiceRegistry.registerService("food-source-service", server.getPort());
 
         server.awaitTermination();
     }
