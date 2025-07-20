@@ -6,26 +6,31 @@ package services.SmartHub;
 
 import com.google.protobuf.Empty;
 import dns.ServiceDiscovery;
+import grpc.common.Address;
+import grpc.common.FoodItemQuantity;
 import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
 import grpc.food_source.FoodSourceServiceGrpc;
 import grpc.food_source.FoodSourceServiceGrpc.FoodSourceServiceStub;
 import grpc.food_source.Stock;
 import grpc.food_source.StockResponse;
+import grpc.logistics.Delivery;
+import grpc.logistics.DeliveryResponse;
+import grpc.logistics.LogisticsServiceGrpc;
+import grpc.logistics.LogisticsServiceGrpc.LogisticsServiceBlockingStub;
 import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
 import grpc.smart_hub.StatusResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import static io.grpc.Status.NOT_FOUND;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jmdns.ServiceInfo;
 
 /**
@@ -155,40 +160,66 @@ public class SmartHub extends SmartHubServiceImplBase {
         }
         System.out.println("Attempting to contact Food Source");
 
-        ManagedChannel channel = getFoodSourceChannel();
-        if (channel == null) {
+        // call helper method below to get the Food source channel
+        ManagedChannel foodSourceChannel = getChannel("food-source-service");
+        if (foodSourceChannel == null) {
             responseObserver.onError(NOT_FOUND.
                     withDescription("Unable to find Food Source Service").
                     asException());
             return;
         }
-        FoodSourceServiceStub foodSource = FoodSourceServiceGrpc.
-                newStub(channel);
-        
+        FoodSourceServiceStub foodSource;
+        foodSource = FoodSourceServiceGrpc.newStub(foodSourceChannel);
+
         try {
+            // call helper method below to make calls to the food source
             stockResponse = checkIfFoodRequestsInStock(foodSource);
         } catch (InterruptedException e) {
-            System.err.println("Unable to get stock response from food service with error: " + e);
+            System.err.
+                    println("Unable to get stock response from food service with error: " + e);
             return;
         }
         // return if no food requests can be delivered
-        if(stockResponse.getStockList().size() < 1) {
+        if (stockResponse.getStockList().
+                size() < 1) {
             System.out.println("Currently no Food requests to fulfill");
             return;
         }
-        
-        // loop over the list and try to make deliveries
-        for(Stock stock: stockResponse.getStockList()) {
-            
+
+        // call helper function to get logistics channel
+        ManagedChannel logisticsChannel = getChannel("logistics-service");
+        if (logisticsChannel == null) {
+            responseObserver.onError(NOT_FOUND.
+                    withDescription("Unable to find Logistics Service").
+                    asException());
+            return;
         }
+
+        // get the logistics blocking stub from the logistics grpc
+        LogisticsServiceBlockingStub logistics;
+        logistics = LogisticsServiceGrpc.newBlockingStub(logisticsChannel);
+
+        // loop over the list and try to make deliveries
+        for (Stock stock : stockResponse.getStockList()) {
+            // call helper method that send the deleivery request
+            sendDeliveryRequest(stock, logistics);
+        }
+        
+        System.out.println("System Checks finished");
     }
 
-    private ManagedChannel getFoodSourceChannel() {
+    /**
+     * Generic method to retrieve a channel
+     *
+     * @param service the service that is requested
+     * @return a managed channel for the requested service
+     */
+    private ManagedChannel getChannel(String service) {
         ServiceInfo serviceInfo = null;
         int retries = 3;
         while (retries > 0) {
-            // call the find service method to get the service info for Food Source
-            serviceInfo = serviceDiscovery.findService("food-source-service");
+            // call the find service method to get the service 
+            serviceInfo = serviceDiscovery.findService(service);
             try {
                 Thread.sleep(3000); // wait for 3 seconds before retrying
             } catch (InterruptedException ex) {
@@ -207,7 +238,7 @@ public class SmartHub extends SmartHubServiceImplBase {
         String host = serviceInfo.getInet4Addresses()[0].getHostAddress();
         int port = serviceInfo.getPort();
 
-        System.out.println("FoodSource service found at " + host + ":" + port);
+        System.out.println(service + " found at " + host + ":" + port);
 
         ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).
                 usePlaintext().
@@ -266,5 +297,70 @@ public class SmartHub extends SmartHubServiceImplBase {
         }
         // return the stored response
         return responseHolder.get();
+    }
+
+    private void sendDeliveryRequest(Stock stock, LogisticsServiceBlockingStub logistics) {
+        int requestID = stock.getRequestId();
+        SavedFoodRequest matchingRequest = null;
+        for (SavedFoodRequest foodRequest : foodRequests) {
+            if (foodRequest.getRequestId() == requestID) {
+                matchingRequest = foodRequest;
+                break;
+            }
+        }
+
+        if (matchingRequest == null) {
+            System.out.
+                    println("No saved request found for returned in stock request, id: " + requestID);
+        } else {
+            System.out.
+                    println("Matching request found... attempting delivery request");
+            // extract the foodRequest from the saved request
+            FoodRequest foodRequestForDelivery = matchingRequest.
+                    getFoodRequest();
+            // get the destination from the matching food request
+            Address destination = matchingRequest.getFoodRequest().
+                    getDestination();
+            // get the location of where the food request can be fulfilled from
+            Address location = stock.getAddress();
+            // get the items that are to be delivered
+            List<FoodItemQuantity> itemsForDelivery = foodRequestForDelivery.
+                    getItemsList();
+            // Build the delivery message from the details above
+            Delivery delivery = Delivery.newBuilder().
+                    addAllItems(itemsForDelivery).
+                    setDestination(destination).
+                    setLocation(location).
+                    build();
+
+            try {
+                DeliveryResponse response = logistics.
+                        handleDeliveryRequest(delivery);
+                // only update the food request if it has been accepted
+                if (response.getAccepted()) {
+                    // create an update message based on the response from the logistics service
+                    SavedFoodRequest updatedRequest = matchingRequest.
+                            toBuilder().
+                            setDeliveryId(response.getDeliveryId()).
+                            setStatus("Enroute").
+                            setPickupTime(response.getPickupTime()).
+                            build();
+
+                    // we replace the old saved food request with the updated version
+                    int index = foodRequests.indexOf(matchingRequest);
+                    foodRequests.set(index, updatedRequest);
+                    System.out.
+                            println("Delivery request accepted. DeliveryID: " + updatedRequest.
+                                    getDeliveryId() + "expected pick up time: " + updatedRequest.
+                                            getPickupTime());
+                } else {
+                    System.out.println("Delivery Request has not been accepted");
+                }
+            } catch (StatusRuntimeException ex) {
+                System.err.
+                        println("Failed with deivery request with error: " + ex.
+                                getMessage());
+            }
+        }
     }
 }
