@@ -133,8 +133,11 @@ public class FoodSource extends FoodSourceServiceImplBase {
                                 setInstock(true).
                                 build();
                         builder.addStock(stock);
-
+                        System.out.println("Added request "+ savedFoodRequest.getRequestId()+ " to it stock list");
                         break;
+                    }
+                    else {
+                        System.out.println("Unable to fulfill request:"+ savedFoodRequest.getRequestId()+ " not enough stock");
                     }
                 }
             }
@@ -147,6 +150,7 @@ public class FoodSource extends FoodSourceServiceImplBase {
 
             @Override
             public void onCompleted() {
+                System.out.println("Finished checking requests");
                 // build the message that we have been building up on the on next call
                 StockResponse response = builder.build();
                 // call the onNext on the responseObserver to send the message
@@ -195,7 +199,7 @@ public class FoodSource extends FoodSourceServiceImplBase {
         for (String eircode : eircodes) {
             // create the arraylist of food items
             List<FoodItemQuantity> fooditemQuantityList = new ArrayList<>();
-            for (int i = 0; i <= essentialGroceries.length; i++) {
+            for (int i = 0; i < essentialGroceries.length; i++) {
                 // create a food item from the FoodItem message 
                 FoodItem foodItem = FoodItem.newBuilder().
                         setId(i + 1).

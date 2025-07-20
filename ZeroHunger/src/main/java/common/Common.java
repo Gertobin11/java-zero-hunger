@@ -20,6 +20,7 @@ public class Common {
      * Generic method to retrieve a channel
      *
      * @param service the service that is requested
+     * @param serviceDiscovery the object that has the method that finds the service
      * @return a managed channel for the requested service
      */
     public static ManagedChannel getChannel(String service, ServiceDiscovery serviceDiscovery) {
