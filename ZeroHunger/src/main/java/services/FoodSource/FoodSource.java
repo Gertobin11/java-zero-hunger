@@ -30,23 +30,6 @@ import java.util.Optional;
  */
 public class FoodSource extends FoodSourceServiceImplBase {
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        // create the food source instance
-        FoodSource mainFoodSource = new FoodSource();
-        
-        // create te server put 0 to get dynamically alotted port
-        Server server = ServerBuilder.forPort(0).
-                addService(mainFoodSource).
-                build().
-                start();
-
-        System.out.println("Main Food Source started, listening on " + server.getPort());
-        
-        ServiceRegistry.registerService("food-source-service", server.getPort());
-
-        server.awaitTermination();
-    }
-
     /**
      * A method that returns an array list of FoodItemQunatity items that match
      * the passed address
