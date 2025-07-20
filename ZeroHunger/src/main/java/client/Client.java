@@ -17,16 +17,18 @@ import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.IOException;
-import javax.swing.JDialog;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -43,13 +45,70 @@ public class Client {
             parentFrame.setUndecorated(true);
             parentFrame.setVisible(true);
 
+            // create basic layout with heading
             JPanel mainContainer = new JPanel(new BorderLayout(10, 10));
             mainContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
             mainContainer.setBackground(new Color(240, 240, 240));
             JLabel mainHeading = new JLabel("Zero Hunger - Smart Food Management Service", SwingConstants.CENTER);
+            mainHeading.setOpaque(false);
             parentFrame.add(mainContainer);
-            mainContainer.add(mainHeading);
+            mainContainer.add(mainHeading, BorderLayout.NORTH);
 
+            // create inner layout that holds the 3 columns of data
+            JPanel innerLayout = new JPanel(new GridLayout(1, 3, 15, 15));
+            innerLayout.setOpaque(false);
+
+            // define the inner columns that display data
+            JPanel requestPanel = new JPanel(new BorderLayout());
+            JPanel statusPanel = new JPanel(new BorderLayout());
+            JPanel trackingPanel = new JPanel(new BorderLayout());
+
+            // add column for making a requests
+            requestPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    "Make Request",
+                    TitledBorder.CENTER,
+                    TitledBorder.TOP
+            ));
+
+            requestPanel.setOpaque(false);
+
+            // add column for showing status of requests
+            statusPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    "Current Request Status",
+                    TitledBorder.CENTER,
+                    TitledBorder.TOP
+            ));
+
+            statusPanel.setOpaque(false);
+
+            // add column to track deliveries
+            trackingPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    "Track Delivery",
+                    TitledBorder.CENTER,
+                    TitledBorder.TOP
+            ));
+            trackingPanel.setOpaque(false);
+            // add the columns to the inner layout
+            innerLayout.add(requestPanel);
+            innerLayout.add(statusPanel);
+            innerLayout.add(trackingPanel);
+
+            mainContainer.add(innerLayout);
+            
+            // create a panel to hold the close button
+            JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            bottomPanel.setOpaque(false);
+            JButton exitButton = new JButton("Close Application");
+            bottomPanel.add(exitButton);
+            mainContainer.add(bottomPanel, BorderLayout.SOUTH);
+            // add a listener to close the application when clicked
+            exitButton.addActionListener(e -> {
+                parentFrame.dispose();
+                System.exit(0);
+            });
             parentFrame.setVisible(true);
         });
 
