@@ -22,7 +22,6 @@ import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
 import grpc.smart_hub.StatusResponse;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import static io.grpc.Status.NOT_FOUND;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -31,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.jmdns.ServiceInfo;
+import common.Common;
 
 /**
  *
@@ -161,7 +160,7 @@ public class SmartHub extends SmartHubServiceImplBase {
         System.out.println("Attempting to contact Food Source");
 
         // call helper method below to get the Food source channel
-        ManagedChannel foodSourceChannel = getChannel("food-source-service");
+        ManagedChannel foodSourceChannel = Common.getChannel("food-source-service", serviceDiscovery);
         if (foodSourceChannel == null) {
             responseObserver.onError(NOT_FOUND.
                     withDescription("Unable to find Food Source Service").
@@ -187,7 +186,7 @@ public class SmartHub extends SmartHubServiceImplBase {
         }
 
         // call helper function to get logistics channel
-        ManagedChannel logisticsChannel = getChannel("logistics-service");
+        ManagedChannel logisticsChannel = Common.getChannel("logistics-service", serviceDiscovery);
         if (logisticsChannel == null) {
             responseObserver.onError(NOT_FOUND.
                     withDescription("Unable to find Logistics Service").
@@ -208,44 +207,6 @@ public class SmartHub extends SmartHubServiceImplBase {
         System.out.println("System Checks finished");
     }
 
-    /**
-     * Generic method to retrieve a channel
-     *
-     * @param service the service that is requested
-     * @return a managed channel for the requested service
-     */
-    private ManagedChannel getChannel(String service) {
-        ServiceInfo serviceInfo = null;
-        int retries = 3;
-        while (retries > 0) {
-            // call the find service method to get the service 
-            serviceInfo = serviceDiscovery.findService(service);
-            try {
-                Thread.sleep(3000); // wait for 3 seconds before retrying
-            } catch (InterruptedException ex) {
-                Thread.currentThread().
-                        interrupt();
-            }
-            retries--;
-        }
-
-        // if service is not found return null
-        if (serviceInfo == null) {
-            return null;
-        }
-
-        // get the host and port from the service info
-        String host = serviceInfo.getInet4Addresses()[0].getHostAddress();
-        int port = serviceInfo.getPort();
-
-        System.out.println(service + " found at " + host + ":" + port);
-
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).
-                usePlaintext().
-                build();
-
-        return channel;
-    }
 
     private StockResponse checkIfFoodRequestsInStock(FoodSourceServiceStub foodSource) throws InterruptedException {
         // create a countdown to limit the time make the method wait for a response
