@@ -90,6 +90,35 @@ public class Client {
                     TitledBorder.CENTER,
                     TitledBorder.TOP
             ));
+            
+            // set the layout of the tracking panel to have 2 rows
+            trackingPanel.setLayout(new GridLayout(2, 1));
+            
+            // add container for current deliveries
+            JPanel deliveryPanel = new JPanel(new BorderLayout());
+            
+            deliveryPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    "Current Deliveries",
+                    TitledBorder.CENTER,
+                    TitledBorder.TOP
+            ));
+            deliveryPanel.setOpaque(false);
+            
+            // add panel for showing current location
+            JPanel locationPanel = new JPanel(new BorderLayout());
+            
+            locationPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(),
+                    "Current Location",
+                    TitledBorder.CENTER,
+                    TitledBorder.TOP
+            ));
+            locationPanel.setOpaque(false);
+            
+            // add the 2 inner containers to the tracking panel
+            trackingPanel.add(deliveryPanel);
+            trackingPanel.add(locationPanel);
             trackingPanel.setOpaque(false);
             // add the columns to the inner layout
             innerLayout.add(requestPanel);
