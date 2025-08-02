@@ -134,7 +134,7 @@ public class FoodSource extends FoodSourceServiceImplBase {
                         break;
                     }
                     else {
-                        System.out.println("Unable to fulfill request:"+ savedFoodRequest.getRequestId()+ " not enough stock");
+                        System.out.println("Unable to fulfill request:"+ savedFoodRequest.getRequestId()+ " not enough stock in location: " + entry.getKey());
                     }
                 }
             }
