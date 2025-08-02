@@ -37,15 +37,15 @@ public final class SmartHub {
       "to\032\033google/protobuf/empty.proto\"#\n\rStatu" +
       "sRequest\022\022\n\nrequest_id\030\001 \001(\005\"J\n\016StatusRe" +
       "sponse\022\016\n\006status\030\001 \001(\t\022\023\n\013delivery_id\030\002 " +
-      "\001(\005\022\023\n\013pickup_time\030\003 \001(\t2\242\002\n\017SmartHubSer" +
-      "vice\022D\n\022handleFoodRequests\022\023.common.Food" +
-      "Request\032\031.smart_hub.StatusResponse\022C\n\014st" +
-      "atusUpdate\022\030.smart_hub.StatusRequest\032\031.s" +
-      "mart_hub.StatusResponse\022C\n\014getAllStatus\022" +
-      "\026.google.protobuf.Empty\032\031.smart_hub.Stat" +
-      "usResponse0\001\022?\n\rtriggerChecks\022\026.google.p" +
-      "rotobuf.Empty\032\026.google.protobuf.EmptyB\022\n" +
-      "\016grpc.smart_hubP\001b\006proto3"
+      "\001(\005\022\023\n\013pickup_time\030\003 \001(\t2\241\002\n\017SmartHubSer" +
+      "vice\022C\n\022handleFoodRequests\022\023.common.Food" +
+      "Request\032\030.common.SavedFoodRequest\022C\n\014sta" +
+      "tusUpdate\022\030.smart_hub.StatusRequest\032\031.sm" +
+      "art_hub.StatusResponse\022C\n\014getAllStatus\022\026" +
+      ".google.protobuf.Empty\032\031.smart_hub.Statu" +
+      "sResponse0\001\022?\n\rtriggerChecks\022\026.google.pr" +
+      "otobuf.Empty\032\026.google.protobuf.EmptyB\022\n\016" +
+      "grpc.smart_hubP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -49,7 +49,7 @@ public class SmartHub extends SmartHubServiceImplBase {
     }
 
     @Override
-    public void handleFoodRequests(FoodRequest request, StreamObserver<StatusResponse> responseObserver) {
+    public void handleFoodRequests(FoodRequest request, StreamObserver<SavedFoodRequest> responseObserver) {
 
         System.out.println("Recieved request for food items");
         // create a saved request from a client request 
@@ -62,17 +62,11 @@ public class SmartHub extends SmartHubServiceImplBase {
                 build();
         // add the saved food request to the array of saved requests
         foodRequests.add(savedFoodRequest);
-        // create a status response based off the initial saved food request
-        StatusResponse status = StatusResponse.newBuilder().
-                setStatus(savedFoodRequest.getStatus()).
-                setPickupTime(savedFoodRequest.getPickupTime()).
-                setDeliveryId(savedFoodRequest.getDeliveryId()).
-                build();
 
         System.out.
                 println("Request added to list for delivery when items are available");
         // return our response
-        responseObserver.onNext(status);
+        responseObserver.onNext(savedFoodRequest);
 
         responseObserver.onCompleted();
 

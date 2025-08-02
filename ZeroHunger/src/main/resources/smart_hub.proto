@@ -11,7 +11,7 @@ option java_multiple_files = true;
 
 // The SmartHubService manages user food requests.
 service SmartHubService {
-  rpc handleFoodRequests(common.FoodRequest) returns (StatusResponse);
+  rpc handleFoodRequests(common.FoodRequest) returns (common.SavedFoodRequest);
   rpc statusUpdate(StatusRequest) returns (StatusResponse);
   
   // No parameters are needed for this method so we use the default

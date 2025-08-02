@@ -4,6 +4,9 @@ package common;
 import dns.ServiceDiscovery;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.jmdns.ServiceInfo;
 
 /*
@@ -54,5 +57,34 @@ public class Common {
                 build();
 
         return channel;
+    }
+    
+    public static List<String> getEssentialGroceriesList() {
+        String[] essentialGroceriesArray = {
+            "Milk",
+            "Pasta",
+            "Rice",
+            "Tomatoes",
+            "Beans",
+            "Fish",
+            "Pasta Sauce",
+            "Cereal",
+            "Oats",
+            "Soup",
+            "Cooking Oil",
+            "Tea",
+            "Coffee",
+            "Sugar",
+            "Flour",
+            "Peanut Butter",
+            "Jam",
+            "Biscuits",
+            "Vegetables",
+            "Salt"
+        };
+        List<String> essentialGroceries = new ArrayList<>();
+        
+        essentialGroceries.addAll(Arrays.asList(essentialGroceriesArray));
+        return essentialGroceries;
     }
 }
