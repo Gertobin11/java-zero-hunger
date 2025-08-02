@@ -12,6 +12,7 @@ import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
 import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
+import grpc.smart_hub.SavedFoodRequests;
 import grpc.smart_hub.SmartHubServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
@@ -24,14 +25,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -69,7 +74,7 @@ public class Client {
                 parentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 parentFrame.setUndecorated(true);
                 parentFrame.setVisible(true);
-
+                
                 // create basic layout with heading
                 JPanel mainContainer = new JPanel(new BorderLayout(10, 10));
                 mainContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -78,15 +83,18 @@ public class Client {
                 mainHeading.setOpaque(false);
                 parentFrame.add(mainContainer);
                 mainContainer.add(mainHeading, BorderLayout.NORTH);
-
+                
                 // create inner layout that holds the 3 columns of data
                 JPanel innerLayout = new JPanel(new GridLayout(1, 3, 15, 15));
                 innerLayout.setOpaque(false);
-
+                
                 JPanel statusPanel = new JPanel(new BorderLayout());
+                // create a list from the current request saved on the server
+                JScrollPane requestList = buildCurrentRequestDisplay(smartHub);
+                statusPanel.add(requestList);
                 JPanel trackingPanel = new JPanel(new BorderLayout());
-                JPanel requestPanel = createRequestPanel(smartHub);
-
+                JPanel requestPanel = createRequestPanel(smartHub, statusPanel);
+                
                 // add column for showing status of requests
                 statusPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(),
@@ -94,9 +102,9 @@ public class Client {
                         TitledBorder.CENTER,
                         TitledBorder.TOP
                 ));
-
+                
                 statusPanel.setOpaque(false);
-
+                
                 // add column to track deliveries
                 trackingPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(),
@@ -104,13 +112,13 @@ public class Client {
                         TitledBorder.CENTER,
                         TitledBorder.TOP
                 ));
-
+                
                 // set the layout of the tracking panel to have 2 rows
                 trackingPanel.setLayout(new GridLayout(2, 1));
-
+                
                 // add container for current deliveries
                 JPanel deliveryPanel = new JPanel(new BorderLayout());
-
+                
                 deliveryPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(),
                         "Current Deliveries",
@@ -118,10 +126,10 @@ public class Client {
                         TitledBorder.TOP
                 ));
                 deliveryPanel.setOpaque(false);
-
+                
                 // add panel for showing current location
                 JPanel locationPanel = new JPanel(new BorderLayout());
-
+                
                 locationPanel.setBorder(BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(),
                         "Current Location",
@@ -129,7 +137,7 @@ public class Client {
                         TitledBorder.TOP
                 ));
                 locationPanel.setOpaque(false);
-
+                
                 // add the 2 inner containers to the tracking panel
                 trackingPanel.add(deliveryPanel);
                 trackingPanel.add(locationPanel);
@@ -138,9 +146,9 @@ public class Client {
                 innerLayout.add(requestPanel);
                 innerLayout.add(statusPanel);
                 innerLayout.add(trackingPanel);
-
+                
                 mainContainer.add(innerLayout);
-
+                
                 // create a panel to hold the close button
                 JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                 bottomPanel.setOpaque(false);
@@ -149,6 +157,7 @@ public class Client {
                 mainContainer.add(bottomPanel, BorderLayout.SOUTH);
                 // add a listener to close the application when clicked
                 exitButton.addActionListener(e -> {
+                    smartHubChannel.shutdown();
                     parentFrame.dispose();
                     System.exit(0);
                 });
@@ -163,10 +172,33 @@ public class Client {
             System.out.println("Error when running the client. Error: " + ex.
                     getMessage());
         }
+    }
+    
+    public static void updateCurrentRequests(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
+        Empty emptyRequest = Empty.newBuilder().
+                    build();
+        SavedFoodRequests requestsOnServer = smartHub.getCurrentRequests(emptyRequest);
+        
+        // remove all items from the list and get add the up to date items from the server
+        currentRequests.clear();
+        currentRequests.addAll(requestsOnServer.getItemsList());
+    }
+    
+    public static JScrollPane buildCurrentRequestDisplay(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
+        updateCurrentRequests(smartHub);
+        DefaultListModel<String> listData = new DefaultListModel<>();
+        for(SavedFoodRequest request : currentRequests) {
+            listData.addElement("ID: " + request.getRequestId() + " | Status: " + request.getStatus());
+        }
+        JList<String> requestList = new JList<>((ListModel<String>) listData);
+        
+        requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        JScrollPane scrollPane = new JScrollPane(requestList);
+        return scrollPane;
     }
 
-    public static JPanel createRequestPanel(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
+    public static JPanel createRequestPanel(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub, JPanel statusPanel) {
         JPanel requestPanel = new JPanel(new BorderLayout());
         // add column for making a requests
         requestPanel.setBorder(BorderFactory.createTitledBorder(
@@ -293,9 +325,6 @@ public class Client {
             // send the request to the smarthub
             SavedFoodRequest response = smartHub.handleFoodRequests(request);
             
-            // add the saved request in the response to current requests
-            currentRequests.add(response);
-            
             System.out.println(response.getStatus());
             
             // show the response to the user
@@ -305,6 +334,10 @@ public class Client {
                                     getStatus(),
                     "Request Received",
                     JOptionPane.PLAIN_MESSAGE);
+            // make the status panel reactive by deleting old requests and rebuilding with the updated list
+            JScrollPane requestList = buildCurrentRequestDisplay(smartHub);
+            statusPanel.removeAll();
+            statusPanel.add(requestList);
         });
         addressPanel.add(submitButton, BorderLayout.SOUTH);
         requestPanel.setOpaque(false);

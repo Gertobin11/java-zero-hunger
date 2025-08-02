@@ -31,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import common.Common;
+import grpc.smart_hub.SavedFoodRequests;
 import java.io.IOException;
 
 /**
@@ -70,6 +71,21 @@ public class SmartHub extends SmartHubServiceImplBase {
 
         responseObserver.onCompleted();
 
+    }
+    
+    /**
+     * Function that returns all the saved food requests stored on the server
+     * @param request empty request object
+     * @param responseObserver used to send the saved requests to the client
+     */
+    @Override
+    public void getCurrentRequests(Empty request, StreamObserver<SavedFoodRequests> responseObserver) {
+        SavedFoodRequests currentRequests = SavedFoodRequests.newBuilder().addAllItems(foodRequests).build();
+        // return all the saved requests
+        responseObserver.onNext(currentRequests);
+
+        responseObserver.onCompleted();
+        
     }
 
     /**

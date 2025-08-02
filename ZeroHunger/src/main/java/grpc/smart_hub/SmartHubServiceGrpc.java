@@ -158,6 +158,38 @@ public final class SmartHubServiceGrpc {
      return getTriggerChecksMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      grpc.smart_hub.SavedFoodRequests> getGetCurrentRequestsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getCurrentRequests",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = grpc.smart_hub.SavedFoodRequests.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      grpc.smart_hub.SavedFoodRequests> getGetCurrentRequestsMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, grpc.smart_hub.SavedFoodRequests> getGetCurrentRequestsMethod;
+    if ((getGetCurrentRequestsMethod = SmartHubServiceGrpc.getGetCurrentRequestsMethod) == null) {
+      synchronized (SmartHubServiceGrpc.class) {
+        if ((getGetCurrentRequestsMethod = SmartHubServiceGrpc.getGetCurrentRequestsMethod) == null) {
+          SmartHubServiceGrpc.getGetCurrentRequestsMethod = getGetCurrentRequestsMethod = 
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, grpc.smart_hub.SavedFoodRequests>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "smart_hub.SmartHubService", "getCurrentRequests"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  grpc.smart_hub.SavedFoodRequests.getDefaultInstance()))
+                  .setSchemaDescriptor(new SmartHubServiceMethodDescriptorSupplier("getCurrentRequests"))
+                  .build();
+          }
+        }
+     }
+     return getGetCurrentRequestsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -224,6 +256,16 @@ public final class SmartHubServiceGrpc {
       asyncUnimplementedUnaryCall(getTriggerChecksMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * this method returns all the current saved requests stored in the server
+     * </pre>
+     */
+    public void getCurrentRequests(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<grpc.smart_hub.SavedFoodRequests> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetCurrentRequestsMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -254,6 +296,13 @@ public final class SmartHubServiceGrpc {
                 com.google.protobuf.Empty,
                 com.google.protobuf.Empty>(
                   this, METHODID_TRIGGER_CHECKS)))
+          .addMethod(
+            getGetCurrentRequestsMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                grpc.smart_hub.SavedFoodRequests>(
+                  this, METHODID_GET_CURRENT_REQUESTS)))
           .build();
     }
   }
@@ -318,6 +367,17 @@ public final class SmartHubServiceGrpc {
       asyncUnaryCall(
           getChannel().newCall(getTriggerChecksMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * this method returns all the current saved requests stored in the server
+     * </pre>
+     */
+    public void getCurrentRequests(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<grpc.smart_hub.SavedFoodRequests> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetCurrentRequestsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -377,6 +437,16 @@ public final class SmartHubServiceGrpc {
       return blockingUnaryCall(
           getChannel(), getTriggerChecksMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * this method returns all the current saved requests stored in the server
+     * </pre>
+     */
+    public grpc.smart_hub.SavedFoodRequests getCurrentRequests(com.google.protobuf.Empty request) {
+      return blockingUnaryCall(
+          getChannel(), getGetCurrentRequestsMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -427,12 +497,24 @@ public final class SmartHubServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getTriggerChecksMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * this method returns all the current saved requests stored in the server
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<grpc.smart_hub.SavedFoodRequests> getCurrentRequests(
+        com.google.protobuf.Empty request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetCurrentRequestsMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_HANDLE_FOOD_REQUESTS = 0;
   private static final int METHODID_STATUS_UPDATE = 1;
   private static final int METHODID_GET_ALL_STATUS = 2;
   private static final int METHODID_TRIGGER_CHECKS = 3;
+  private static final int METHODID_GET_CURRENT_REQUESTS = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -466,6 +548,10 @@ public final class SmartHubServiceGrpc {
         case METHODID_TRIGGER_CHECKS:
           serviceImpl.triggerChecks((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
+          break;
+        case METHODID_GET_CURRENT_REQUESTS:
+          serviceImpl.getCurrentRequests((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<grpc.smart_hub.SavedFoodRequests>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -532,6 +618,7 @@ public final class SmartHubServiceGrpc {
               .addMethod(getStatusUpdateMethod())
               .addMethod(getGetAllStatusMethod())
               .addMethod(getTriggerChecksMethod())
+              .addMethod(getGetCurrentRequestsMethod())
               .build();
         }
       }
