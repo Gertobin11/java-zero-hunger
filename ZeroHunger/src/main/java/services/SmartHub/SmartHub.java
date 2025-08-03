@@ -36,7 +36,7 @@ import java.io.IOException;
 
 /**
  *
- * @author gerto
+ * @author gertobin
  */
 public class SmartHub extends SmartHubServiceImplBase {
 
