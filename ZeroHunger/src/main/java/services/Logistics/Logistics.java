@@ -72,23 +72,28 @@ public class Logistics extends LogisticsServiceImplBase {
     public StreamObserver<LocationUpdate> trackDelivery(StreamObserver<Location> responseObserver) {
 
         System.out.println("Streaming delivery location....");
-        // we just check if a delivery has been accepted then we simulate the latitude longitude moving towards a delivery
+        // we just check if a delivery has been accepted then we simulate the latitude
+        // longitude moving towards a delivery
         return new StreamObserver<LocationUpdate>() {
             // mock location as int -- Tralee town center
             // this would be sent via smart devices on the truck or van
             int currentLongitude = 522709;
             int currentLatitude = -96974;
 
-            //  mock location as int for destination
+            // mock location as int for destination
             // this would be generated from the eircode
             int destinationLongitude = 532709;
             int destinationLatitude = -97974;
 
             @Override
             public void onNext(LocationUpdate value) {
-                // we set the status of the current delivery
+                // make a log of the request received
+                System.out.
+                        println("Logistics: Received track request for delivery ID: " + value.
+                                getDeliveryId());
+                // set the status of the current delivery
                 String status = "Enroute";
-                // we move the delivery towards the destination
+                // move the delivery towards the destination
                 if (currentLongitude < destinationLongitude) {
                     currentLongitude++;
                 }
@@ -104,21 +109,21 @@ public class Logistics extends LogisticsServiceImplBase {
 
                 // every on next we verify that the request is for a valid delivery
                 if (!acceptedDeliveries.contains(value.getDeliveryId())) {
-                    responseObserver.onError(NOT_FOUND.
-                            withDescription("Delivery Request with an ID of " + value.
+                    responseObserver.onError(NOT_FOUND
+                            .withDescription("Delivery Request with an ID of " + value.
                                     getDeliveryId() + " not found").
                             asException());
                 } else {
-                    // we change the longitude to the proper string format
+                    // change the longitude to the proper string format
                     String longitude = (currentLongitude + "");
                     String formattedLongitude = longitude.substring(0, 2) + "." + longitude.
                             substring(2);
-                    // we change the latitude to the proper string format
+                    // change the latitude to the proper string format
                     String latitude = (currentLatitude + "");
                     String formattedLatitude = latitude.substring(0, 2) + "." + latitude.
                             substring(2);
 
-                    // we build the current location message
+                    // build the current location message
                     Location location = Location.newBuilder().
                             setDeliveryId(value.getDeliveryId()).
                             setLatitude(formattedLatitude).
@@ -126,14 +131,22 @@ public class Logistics extends LogisticsServiceImplBase {
                             setStatus(status).
                             build();
 
-                    // we stream the current location to the caller
+                    // stream the current location to the caller
                     responseObserver.onNext(location);
                 }
             }
 
             @Override
             public void onError(Throwable t) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                // check if the stream was cancelled by user or by an error
+                io.grpc.Status status = io.grpc.Status.fromThrowable(t);
+                if (status.getCode() == io.grpc.Status.Code.CANCELLED) {
+                    System.out.
+                            println("Client cancelled the stream. Cleaning up resources.");
+                } else {
+                    System.err.
+                            println("An unexpected stream error occurred: " + status);
+                }
             }
 
             @Override

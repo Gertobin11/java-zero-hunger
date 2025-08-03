@@ -12,12 +12,18 @@ import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
 import grpc.common.FoodRequest;
 import grpc.common.SavedFoodRequest;
+import grpc.logistics.Location;
+import grpc.logistics.LocationUpdate;
 import grpc.logistics.LogisticsServiceGrpc;
 import grpc.logistics.LogisticsServiceGrpc.LogisticsServiceStub;
 import grpc.smart_hub.SavedFoodRequests;
 import grpc.smart_hub.SmartHubServiceGrpc;
 import io.grpc.ManagedChannel;
+import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.ClientResponseObserver;
+import io.grpc.stub.StreamObserver;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -27,7 +33,13 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -46,15 +58,24 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
- * @author gerto
+ * @author gertobin
  */
 public class Client {
 
     // the current list of requests
     public static List<SavedFoodRequest> currentRequests = new ArrayList<>();
+
+    private static StreamObserver<LocationUpdate> activeRequestObserver;
+    private static int activeDeliveryId = -1;
+
+    // use of schedulers https://mkyong.com/java/java-scheduledexecutorservice-examples/
+    private static final ScheduledExecutorService scheduler = Executors.
+            newSingleThreadScheduledExecutor();
+    private static Future<?> activePollingFuture;
 
     public static void main(String[] args) {
         // declare channels here so can be checked and shutdown
@@ -90,7 +111,8 @@ public class Client {
 
             SwingUtilities.invokeLater(() -> {
                 JFrame parentFrame = new JFrame();
-                // how to make a Jframe fullscreen https://stackoverflow.com/questions/11570356/jframe-in-full-screen-java
+                // how to make a Jframe fullscreen
+                // https://stackoverflow.com/questions/11570356/jframe-in-full-screen-java
                 parentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 parentFrame.setUndecorated(true);
                 parentFrame.setVisible(true);
@@ -99,7 +121,8 @@ public class Client {
                 JPanel mainContainer = new JPanel(new BorderLayout(10, 10));
                 mainContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
                 mainContainer.setBackground(new Color(240, 240, 240));
-                JLabel mainHeading = new JLabel("Zero Hunger - Smart Food Management Service", SwingConstants.CENTER);
+                JLabel mainHeading = new JLabel("Zero Hunger - Smart Food Management Service",
+                        SwingConstants.CENTER);
                 mainHeading.setOpaque(false);
                 parentFrame.add(mainContainer);
                 mainContainer.add(mainHeading, BorderLayout.NORTH);
@@ -113,8 +136,8 @@ public class Client {
                 // create a list from the current request saved on the server
                 JScrollPane requestList = buildCurrentRequestDisplay(smartHub);
                 statusPanel.add(requestList);
-                
-                JPanel trackingPanel = buildTrackingPanel(smartHub);
+
+                JPanel trackingPanel = buildTrackingPanel(logistics, smartHub);
 
                 JPanel requestPanel = createRequestPanel(smartHub, statusPanel);
 
@@ -123,8 +146,7 @@ public class Client {
                         BorderFactory.createEtchedBorder(),
                         "Current Request Status",
                         TitledBorder.CENTER,
-                        TitledBorder.TOP
-                ));
+                        TitledBorder.TOP));
 
                 statusPanel.setOpaque(false);
 
@@ -166,8 +188,8 @@ public class Client {
                             awaitTermination(5, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     System.err.
-                            println("Interrupted while waiting for channel shutdown: " + e.
-                                    getMessage());
+                            println("Interrupted while waiting for channel shutdown: "
+                                    + e.getMessage());
                     // if an error ocurred in shutdown call interupt on the thread
                     Thread.currentThread().
                             interrupt();
@@ -181,8 +203,8 @@ public class Client {
                             awaitTermination(5, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     System.err.
-                            println("Interrupted while waiting for channel shutdown: " + e.
-                                    getMessage());
+                            println("Interrupted while waiting for channel shutdown: "
+                                    + e.getMessage());
                     // if an error ocurred in shutdown call interupt on the thread
                     Thread.currentThread().
                             interrupt();
@@ -191,20 +213,32 @@ public class Client {
         }
     }
 
+    /**
+     * Function that makes a call to the smart hub and updates the current requests with the latest from the server
+     * @param smartHub the smart hub gprc stub
+     */
     public static void updateCurrentRequests(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
         Empty emptyRequest = Empty.newBuilder().
                 build();
         SavedFoodRequests requestsOnServer = smartHub.
                 getCurrentRequests(emptyRequest);
 
-        // remove all items from the list and get add the up to date items from the server
+        // remove all items from the list and get add the up to date items from the
+        // server
         currentRequests.clear();
         currentRequests.addAll(requestsOnServer.getItemsList());
     }
 
+    /**
+     * Function that creates a list with all the current requests that have been accepted for delivery
+     * @param smartHub
+     * @return JScrollPane
+     */
     public static JScrollPane buildCurrentRequestDisplay(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
+        // Get the latest requests from the server to ensure an up to date list
         updateCurrentRequests(smartHub);
         DefaultListModel<String> listData = new DefaultListModel<>();
+        // loop over the list and build a string repesentation of each request
         for (SavedFoodRequest request : currentRequests) {
             listData.
                     addElement("ID: " + request.getRequestId() + " | Status: " + request.
@@ -212,55 +246,198 @@ public class Client {
         }
         JList<String> requestList = new JList<>((ListModel<String>) listData);
 
+        // only alow a single selection - this allows us to track each order
         requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(requestList);
         return scrollPane;
     }
 
-    public static JScrollPane buildCurrentDeliveriesDisplay(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub, JPanel locationpanel) {
+    /**
+     * Function that creates the components of the track delivey display, implements the bi directional stream
+     * that updates the delivery location with each message received
+     * @param logistics the logistics gprc stub
+     * @param smartHub the smart hub gprc stub
+     * @param locationPanel the parent panel that we attach the created components to
+     * @return JScrollPane
+     */
+    public static JScrollPane buildCurrentDeliveriesDisplay(
+            LogisticsServiceGrpc.LogisticsServiceStub logistics,
+            SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub,
+            JPanel locationPanel) {
         updateCurrentRequests(smartHub);
         DefaultListModel<String> listData = new DefaultListModel<>();
         for (SavedFoodRequest request : currentRequests) {
             if (request.getDeliveryId() != 0) {
                 listData.
-                        addElement("ID: " + request.getRequestId() + " | DeliveryID: " + request.
-                                getDeliveryId() + " | Pick up time: " + request.
-                                        getPickupTime());
+                        addElement("ID: " + request.getRequestId() + " | DeliveryID: "
+                                + request.getDeliveryId() + " | Pick up time: "
+                                + request.getPickupTime());
             }
-
         }
-        JList<String> requestList = new JList<>((ListModel<String>) listData);
+        JList<String> requestList = new JList<>(listData);
+        JTextArea coordinates = new JTextArea(3, 20);
+        coordinates.setEditable(false);
+        coordinates.setLineWrap(true);
+        coordinates.setWrapStyleWord(true);
+        locationPanel.add(new JScrollPane(coordinates));
 
         requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-         requestList.addListSelectionListener(e -> {
-             // Add event listener so when a delivery is selected, it can start streaming the location
-             // ensure that an item is selected
-            if (!e.getValueIsAdjusting() && requestList.getSelectedValue() != null) {
-                // get the value and extract the delivery id
-                String value = requestList.getSelectedValue();
-                int start = value.indexOf("DeliveryID: ") + 12;
-                int end = value.lastIndexOf("|");
-                String stringDeliveryID = value.substring(start, end).trim();
-                int deliveryID = Integer.parseInt(stringDeliveryID);
-                System.out.println(deliveryID);
+
+        requestList.addListSelectionListener(e -> {
+            // Exit early if the selection is still changing or nothing is selected
+            if (e.getValueIsAdjusting() || requestList.getSelectedValue() == null) {
+                return;
             }
+
+            // Extract the new delivery ID
+            String value = requestList.getSelectedValue();
+            int start = value.indexOf("DeliveryID: ") + 12;
+            int end = value.lastIndexOf("|");
+            int newDeliveryId;
+            try {
+                String stringDeliveryID = value.substring(start, end).
+                        trim();
+                newDeliveryId = Integer.parseInt(stringDeliveryID);
+            } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
+                coordinates.setText("Error parsing DeliveryID.");
+                return;
+            }
+
+            // Stop previous stream and polling task ---
+            if (newDeliveryId == activeDeliveryId) {
+                System.out.
+                        println("Delivery " + newDeliveryId + " is already being tracked.");
+                return; // Do nothing
+            }
+
+            // Stop the old polling loop if it's running
+            if (activePollingFuture != null) {
+                activePollingFuture.cancel(true);
+            }
+            // Close the previous gRPC stream if one exists
+            if (activeRequestObserver != null) {
+                System.out.
+                        println("Closing previous stream for delivery " + activeDeliveryId);
+                activeRequestObserver.onCompleted();
+            }
+
+            // Prepare the new bidirectional streaM
+            activeDeliveryId = newDeliveryId;
+            coordinates.
+                    setText("Opening stream for delivery: " + activeDeliveryId + "...");
+            System.out.
+                    println("Opening stream for delivery: " + activeDeliveryId);
+
+            final AtomicBoolean initialMessageSent = new AtomicBoolean(false);
+
+            ClientResponseObserver<LocationUpdate, Location> responseObserver = new ClientResponseObserver<LocationUpdate, Location>() {
+                @Override
+                public void beforeStart(ClientCallStreamObserver<LocationUpdate> requestStream) {
+                    activeRequestObserver = requestStream;
+                    requestStream.setOnReadyHandler(() -> {
+                        if (requestStream.isReady() && !initialMessageSent.
+                                getAndSet(true)) {
+                            System.out.println(
+                                    "Stream is ready. Sending initial message for delivery: "
+                                    + activeDeliveryId);
+                            LocationUpdate initialRequest = LocationUpdate.
+                                    newBuilder().
+                                    setDeliveryId(activeDeliveryId).
+                                    build();
+                            requestStream.onNext(initialRequest);
+
+                        // This will send a message every 1.5 seconds for an update
+                            activePollingFuture = scheduler.
+                                    scheduleAtFixedRate(() -> {
+                                        try {
+                                            System.out.println(
+                                                    "Polling for update on delivery: "
+                                                    + activeDeliveryId);
+                                            LocationUpdate pollingRequest = LocationUpdate.
+                                                    newBuilder().
+                                                    setDeliveryId(activeDeliveryId).
+                                                    build();
+                                            // Send the next request for an update
+                                            activeRequestObserver.
+                                                    onNext(pollingRequest);
+                                        } catch (Exception ex) {
+                                            System.err.
+                                                    println("Polling task failed: "
+                                                            + ex.getMessage());
+                                            // Cancel the task if it fails
+                                            activePollingFuture.cancel(true);
+                                        }
+                                    }, 1500, 1500, TimeUnit.MILLISECONDS);
+  
+                        }
+                    });
+                }
+
+                @Override
+                public void onNext(Location locationUpdate) {
+                        // update the text with the latitude and longitude returned from logistics
+                    String locationText = "Lat: " + locationUpdate.getLatitude() + " Lon: " + locationUpdate.
+                            getLongitude() + " Status: " + locationUpdate.
+                                    getStatus();
+                    SwingUtilities.invokeLater(() -> coordinates.
+                            setText(locationText));
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                        // get the status of the error and print it to the output of the tracking
+                    Status status = Status.fromThrowable(t);
+                    String errorText = "Stream Error: " + status.getCode();
+                    System.err.println(errorText + ": " + status.
+                            getDescription());
+                    SwingUtilities.invokeLater(() -> coordinates.
+                            setText(errorText));
+                    if (activePollingFuture != null) {
+                        activePollingFuture.cancel(true);
+                    }
+                    activeRequestObserver = null;
+                    activeDeliveryId = -1;
+                }
+
+                @Override
+                public void onCompleted() {
+                    System.out.
+                            println("Server has completed the stream for delivery "
+                                    + activeDeliveryId);
+                    SwingUtilities.invokeLater(() -> coordinates
+                            .setText("Delivery " + activeDeliveryId + " complete."));
+                    if (activePollingFuture != null) {
+                        activePollingFuture.cancel(true);
+                    }
+                    activeRequestObserver = null;
+                    activeDeliveryId = -1;
+                }
+            };
+
+            // start the call
+            logistics.trackDelivery(responseObserver);
         });
 
         JScrollPane scrollPane = new JScrollPane(requestList);
         return scrollPane;
     }
 
-    public static JPanel createRequestPanel(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub, JPanel statusPanel) {
+    /**
+     * Method that creates a form that allows a user to make a request to the service
+     * @param smartHub the smart hub gprc stub
+     * @param statusPanel the JPanel that we update with the current requests to keep it up to date
+     * @return JPanel s
+     */
+    public static JPanel createRequestPanel(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub,
+            JPanel statusPanel) {
         JPanel requestPanel = new JPanel(new BorderLayout());
         // add column for making a requests
         requestPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(),
                 "Make Request",
                 TitledBorder.CENTER,
-                TitledBorder.TOP
-        ));
+                TitledBorder.TOP));
 
         // set the layout to 2 rows, 1 column
         requestPanel.setLayout(new GridLayout(2, 1));
@@ -279,7 +456,8 @@ public class Client {
             foodGridPanel.add(quantitySpinner);
         }
 
-        // the list of items is big , so make the pane scrollable to handle multiple screen sizes
+        // the list of items is big , so make the pane scrollable to handle multiple
+        // screen sizes
         JScrollPane foodScrollPane = new JScrollPane(foodGridPanel);
         foodScrollPane.setBorder(BorderFactory.
                 createTitledBorder("Select Food & Quantity"));
@@ -290,8 +468,7 @@ public class Client {
                 BorderFactory.createEtchedBorder(),
                 "Delivery Address",
                 TitledBorder.CENTER,
-                TitledBorder.TOP
-        ));
+                TitledBorder.TOP));
 
         // Create eircode input with label
         JPanel eircodeInputPanel = new JPanel(new BorderLayout(2, 1));
@@ -383,12 +560,12 @@ public class Client {
 
             // show the response to the user
             JOptionPane.showMessageDialog(requestPanel,
-                    "Request saved with an id of: " + response.
-                            getRequestId() + " , current status: " + response.
-                            getStatus(),
+                    "Request saved with an id of: " + response.getRequestId()
+                    + " , current status: " + response.getStatus(),
                     "Request Received",
                     JOptionPane.PLAIN_MESSAGE);
-            // make the status panel reactive by deleting old requests and rebuilding with the updated list
+            // make the status panel reactive by deleting old requests and rebuilding with
+            // the updated list
             JScrollPane requestList = buildCurrentRequestDisplay(smartHub);
             statusPanel.removeAll();
             statusPanel.add(requestList);
@@ -402,15 +579,15 @@ public class Client {
         return requestPanel;
     }
 
-    public static JPanel buildTrackingPanel(SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
+    public static JPanel buildTrackingPanel(LogisticsServiceStub logistics,
+            SmartHubServiceGrpc.SmartHubServiceBlockingStub smartHub) {
         JPanel trackingPanel = new JPanel(new BorderLayout());
         // add column to track deliveries
         trackingPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(),
                 "Track Delivery",
                 TitledBorder.CENTER,
-                TitledBorder.TOP
-        ));
+                TitledBorder.TOP));
 
         // set the layout of the tracking panel to have 2 rows
         trackingPanel.setLayout(new GridLayout(2, 1));
@@ -422,32 +599,28 @@ public class Client {
                 BorderFactory.createEtchedBorder(),
                 "Current Deliveries",
                 TitledBorder.CENTER,
-                TitledBorder.TOP
-        ));
+                TitledBorder.TOP));
         deliveryPanel.setOpaque(false);
-        
-         // add panel for showing current location
+
+        // add panel for showing current location
         JPanel locationPanel = new JPanel(new BorderLayout());
 
         locationPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(),
                 "Current Location",
                 TitledBorder.CENTER,
-                TitledBorder.TOP
-        ));
+                TitledBorder.TOP));
         locationPanel.setOpaque(false);
 
-        JScrollPane currentDeliveries = buildCurrentDeliveriesDisplay(smartHub, locationPanel);
-        
+        JScrollPane currentDeliveries = buildCurrentDeliveriesDisplay(logistics, smartHub, locationPanel);
+
         deliveryPanel.add(currentDeliveries);
 
-
-        // add the 2 inner containers to the tracking panel
         trackingPanel.add(deliveryPanel);
         trackingPanel.add(locationPanel);
         trackingPanel.setOpaque(false);
-        
+
         return trackingPanel;
-        
+
     }
 }
