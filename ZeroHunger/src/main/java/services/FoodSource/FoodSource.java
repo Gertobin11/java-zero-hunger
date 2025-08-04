@@ -141,8 +141,7 @@ public class FoodSource extends FoodSourceServiceImplBase {
 
             @Override
             public void onError(Throwable t) {
-                // called when a client sends an error
-                //....
+               System.err.println("Unable to perform check if request is in stock with error: " + t.getMessage());
             }
 
             @Override

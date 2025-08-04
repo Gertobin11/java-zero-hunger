@@ -4,6 +4,7 @@
  */
 package client;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.Empty;
 import common.Common;
 import dns.ServiceDiscovery;
@@ -18,6 +19,7 @@ import grpc.logistics.LogisticsServiceGrpc;
 import grpc.logistics.LogisticsServiceGrpc.LogisticsServiceStub;
 import grpc.smart_hub.SavedFoodRequests;
 import grpc.smart_hub.SmartHubServiceGrpc;
+import grpc.smart_hub.StatusResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -31,6 +33,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -253,6 +256,7 @@ public class Client {
 
         JScrollPane scrollPane = new JScrollPane(requestList);
 
+        // create a button that triggers the smarthub triggerChecks method
         JButton updateButton = new JButton("Perform System Checks");
 
         updateButton.addActionListener(e -> {
@@ -262,8 +266,45 @@ public class Client {
                     JOptionPane.PLAIN_MESSAGE);
             triggerUpdates();
         });
-        
-        statusPanel.add(updateButton, BorderLayout.NORTH);
+
+        // add button to the top of the panel
+        statusPanel.add(updateButton, BorderLayout.SOUTH);
+
+        JButton statusUpdate = new JButton("Get latest status");
+
+        statusUpdate.addActionListener(e -> {
+            String statusString = "";
+            Empty emptyRequest = Empty.newBuilder().
+                    build();
+            try {
+                Iterator<StatusResponse> newStatus = smartHub.
+                        getAllStatus(emptyRequest);
+                // convert iterator to arraylist: https://stackoverflow.com/questions/10117026/convert-iterator-to-list
+                List<StatusResponse> statusList = Lists.newArrayList(newStatus);
+
+                for (StatusResponse status : statusList) {
+                    // only show status of requests that are not pending
+                    if (status.getDeliveryId() != 0) {
+                        statusString += "DeliveryID: " + status.getDeliveryId() + "Status: " + status.
+                                getStatus() + "\n";
+                    }
+                }
+            } catch (StatusRuntimeException ex) {
+                // If update fails, we inform the user
+                System.out.println("Failed to get stats with error: " + ex.
+                        getMessage());
+                statusString = "Failed to get stats with error: " + ex.
+                        getMessage();
+            }
+
+            JOptionPane.showMessageDialog(innerLayout,
+                    statusString,
+                    "Current Active Requests",
+                    JOptionPane.PLAIN_MESSAGE);
+        });
+
+        // add button to the bottom of the panel
+        statusPanel.add(statusUpdate, BorderLayout.NORTH);
 
         return scrollPane;
     }
@@ -675,7 +716,7 @@ public class Client {
             innerLayout.add(trackingPanel);
         }
 
-        // trigger the systems checks to run in the background
+        // create an empty message 
         Empty emptyRequest = Empty.newBuilder().
                 build();
 

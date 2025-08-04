@@ -11,7 +11,7 @@ import javax.jmdns.ServiceInfo;
 
 /**
  *
- * @author gerto
+ * @author gertobin
  */
 public class ServiceRegistry {
      /**

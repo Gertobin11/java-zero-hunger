@@ -273,7 +273,7 @@ public class SmartHub extends SmartHubServiceImplBase {
 
             @Override
             public void onError(Throwable t) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                System.err.println("Unable to check if food requests are in Stock with Error: " + t.getMessage());
             }
 
             @Override
@@ -353,7 +353,7 @@ public class SmartHub extends SmartHubServiceImplBase {
                             setPickupTime(response.getPickupTime()).
                             build();
 
-                    // we replace the old saved food request with the updated version
+                    // replace the old saved food request with the updated version
                     int index = foodRequests.indexOf(matchingRequest);
                     foodRequests.set(index, updatedRequest);
                     System.out.

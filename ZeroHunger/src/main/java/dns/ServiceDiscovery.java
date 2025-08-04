@@ -15,7 +15,7 @@ import javax.jmdns.ServiceListener;
 
 /**
  *
- * @author gerto
+ * @author gertobin
  */
 public class ServiceDiscovery {
     // A map to hold the discovered services
