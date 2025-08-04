@@ -11,7 +11,7 @@ option java_multiple_files = true;
 
 // The SmartHubService manages user food requests.
 service SmartHubService {
-  rpc handleFoodRequests(common.FoodRequest) returns (StatusResponse);
+  rpc handleFoodRequests(common.FoodRequest) returns (common.SavedFoodRequest);
   rpc statusUpdate(StatusRequest) returns (StatusResponse);
   
   // No parameters are needed for this method so we use the default
@@ -21,6 +21,10 @@ service SmartHubService {
   // this method is for triggering internal communications between services
   // to facilitate deliveries
   rpc triggerChecks(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+    // this method returns all the current saved requests stored in the server
+    rpc getCurrentRequests(google.protobuf.Empty) returns (SavedFoodRequests);
+
 }
 
 message StatusRequest {
@@ -31,4 +35,8 @@ message StatusResponse {
   string status = 1;
   int32 delivery_id = 2;
   string pickup_time = 3;
+}
+
+message SavedFoodRequests {
+    repeated common.SavedFoodRequest items = 1;
 }

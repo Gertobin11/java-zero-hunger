@@ -22,7 +22,6 @@ import grpc.smart_hub.SmartHubServiceGrpc.SmartHubServiceImplBase;
 import grpc.smart_hub.StatusRequest;
 import grpc.smart_hub.StatusResponse;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import static io.grpc.Status.NOT_FOUND;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -31,11 +30,13 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.jmdns.ServiceInfo;
+import common.Common;
+import grpc.smart_hub.SavedFoodRequests;
+import java.io.IOException;
 
 /**
  *
- * @author gerto
+ * @author gertobin
  */
 public class SmartHub extends SmartHubServiceImplBase {
 
@@ -49,7 +50,7 @@ public class SmartHub extends SmartHubServiceImplBase {
     }
 
     @Override
-    public void handleFoodRequests(FoodRequest request, StreamObserver<StatusResponse> responseObserver) {
+    public void handleFoodRequests(FoodRequest request, StreamObserver<SavedFoodRequest> responseObserver) {
 
         System.out.println("Recieved request for food items");
         // create a saved request from a client request 
@@ -62,20 +63,29 @@ public class SmartHub extends SmartHubServiceImplBase {
                 build();
         // add the saved food request to the array of saved requests
         foodRequests.add(savedFoodRequest);
-        // create a status response based off the initial saved food request
-        StatusResponse status = StatusResponse.newBuilder().
-                setStatus(savedFoodRequest.getStatus()).
-                setPickupTime(savedFoodRequest.getPickupTime()).
-                setDeliveryId(savedFoodRequest.getDeliveryId()).
-                build();
 
         System.out.
                 println("Request added to list for delivery when items are available");
         // return our response
-        responseObserver.onNext(status);
+        responseObserver.onNext(savedFoodRequest);
 
         responseObserver.onCompleted();
 
+    }
+    
+    /**
+     * Function that returns all the saved food requests stored on the server
+     * @param request empty request object
+     * @param responseObserver used to send the saved requests to the client
+     */
+    @Override
+    public void getCurrentRequests(Empty request, StreamObserver<SavedFoodRequests> responseObserver) {
+        SavedFoodRequests currentRequests = SavedFoodRequests.newBuilder().addAllItems(foodRequests).build();
+        // return all the saved requests
+        responseObserver.onNext(currentRequests);
+
+        responseObserver.onCompleted();
+        
     }
 
     /**
@@ -150,101 +160,98 @@ public class SmartHub extends SmartHubServiceImplBase {
 
     @Override
     public void triggerChecks(Empty request, StreamObserver<Empty> responseObserver) {
-        StockResponse stockResponse = null;
-        System.out.println("Smart Hub Service initiating action checks....");
-
-        // return if no current food requests
-        if (foodRequests.size() < 1) {
-            System.out.println("No requests to check");
-            return;
-        }
-        System.out.println("Attempting to contact Food Source");
-
-        // call helper method below to get the Food source channel
-        ManagedChannel foodSourceChannel = getChannel("food-source-service");
-        if (foodSourceChannel == null) {
-            responseObserver.onError(NOT_FOUND.
-                    withDescription("Unable to find Food Source Service").
-                    asException());
-            return;
-        }
-        FoodSourceServiceStub foodSource;
-        foodSource = FoodSourceServiceGrpc.newStub(foodSourceChannel);
-
+        // declare channels here so can be checked and shutdown
+        ManagedChannel logisticsChannel = null;
+        ManagedChannel foodSourceChannel = null;
         try {
-            // call helper method below to make calls to the food source
-            stockResponse = checkIfFoodRequestsInStock(foodSource);
-        } catch (InterruptedException e) {
-            System.err.
-                    println("Unable to get stock response from food service with error: " + e);
-            return;
-        }
-        // return if no food requests can be delivered
-        if (stockResponse.getStockList().
-                size() < 1) {
-            System.out.println("Currently no Food requests to fulfill");
-            return;
-        }
+            // look for needed services
+            serviceDiscovery.start();
+            StockResponse stockResponse = null;
+            System.out.println("Smart Hub Service initiating action checks....");
 
-        // call helper function to get logistics channel
-        ManagedChannel logisticsChannel = getChannel("logistics-service");
-        if (logisticsChannel == null) {
-            responseObserver.onError(NOT_FOUND.
-                    withDescription("Unable to find Logistics Service").
-                    asException());
-            return;
-        }
-
-        // get the logistics blocking stub from the logistics grpc
-        LogisticsServiceBlockingStub logistics;
-        logistics = LogisticsServiceGrpc.newBlockingStub(logisticsChannel);
-
-        // loop over the list and try to make deliveries
-        for (Stock stock : stockResponse.getStockList()) {
-            // call helper method that send the deleivery request
-            sendDeliveryRequest(stock, logistics);
-        }
-        
-        System.out.println("System Checks finished");
-    }
-
-    /**
-     * Generic method to retrieve a channel
-     *
-     * @param service the service that is requested
-     * @return a managed channel for the requested service
-     */
-    private ManagedChannel getChannel(String service) {
-        ServiceInfo serviceInfo = null;
-        int retries = 3;
-        while (retries > 0) {
-            // call the find service method to get the service 
-            serviceInfo = serviceDiscovery.findService(service);
-            try {
-                Thread.sleep(3000); // wait for 3 seconds before retrying
-            } catch (InterruptedException ex) {
-                Thread.currentThread().
-                        interrupt();
+            // return if no current food requests
+            if (foodRequests.size() < 1) {
+                System.out.println("No requests to check");
+                return;
             }
-            retries--;
+            System.out.println("Attempting to contact Food Source");
+
+            // call helper method below to get the Food source channel
+            foodSourceChannel = Common.
+                    getChannel("food-source-service", serviceDiscovery);
+            if (foodSourceChannel == null) {
+                responseObserver.onError(NOT_FOUND.
+                        withDescription("Unable to find Food Source Service").
+                        asException());
+                return;
+            }
+            FoodSourceServiceStub foodSource;
+            foodSource = FoodSourceServiceGrpc.newStub(foodSourceChannel);
+
+            try {
+                // call helper method below to make calls to the food source
+                stockResponse = checkIfFoodRequestsInStock(foodSource);
+            } catch (InterruptedException e) {
+                System.err.
+                        println("Unable to get stock response from food service with error: " + e);
+                return;
+            }
+            // return if no food requests can be delivered
+            if (stockResponse.getStockList() != null && stockResponse.
+                    getStockList().
+                    size() < 1) {
+                System.out.println("Currently no Food requests to fulfill");
+                return;
+            }
+
+            // call helper function to get logistics channel
+            logisticsChannel = Common.
+                    getChannel("logistics-service", serviceDiscovery);
+            if (logisticsChannel == null) {
+                responseObserver.onError(NOT_FOUND.
+                        withDescription("Unable to find Logistics Service").
+                        asException());
+                return;
+            }
+
+            // get the logistics blocking stub from the logistics grpc
+            LogisticsServiceBlockingStub logistics;
+            logistics = LogisticsServiceGrpc.newBlockingStub(logisticsChannel);
+
+            // loop over the list and try to make deliveries
+            for (Stock stock : stockResponse.getStockList()) {
+                // call helper method that send the deleivery request
+                sendDeliveryRequest(stock, logistics);
+            }
+
+            System.out.println("System Checks finished");
+        } catch (IOException ex) {
+            System.err.println("Unable to connect to DNS");
         }
-
-        // if service is not found return null
-        if (serviceInfo == null) {
-            return null;
+        finally {
+            // if the channel is still active, shut it down
+            if (logisticsChannel != null) {
+                System.out.println("Shutting down the Logistics channel channel.");
+                try {
+                    logisticsChannel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    System.err.println("Interrupted while waiting for channel shutdown: " + e.getMessage());
+                    // if an error ocurred in shutdown call interupt on the thread
+                    Thread.currentThread().interrupt();
+                }
+            }
+            // check to see if the food source channel is still active
+             if (foodSourceChannel != null) {
+                System.out.println("Shutting down the Food Source channel.");
+                try {
+                    foodSourceChannel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    System.err.println("Interrupted while waiting for channel shutdown: " + e.getMessage());
+                    // if an error ocurred in shutdown call interupt on the thread
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
-
-        // get the host and port from the service info
-        String host = serviceInfo.getInet4Addresses()[0].getHostAddress();
-        int port = serviceInfo.getPort();
-
-        System.out.println(service + " found at " + host + ":" + port);
-
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port).
-                usePlaintext().
-                build();
-
-        return channel;
     }
 
     private StockResponse checkIfFoodRequestsInStock(FoodSourceServiceStub foodSource) throws InterruptedException {
@@ -266,7 +273,7 @@ public class SmartHub extends SmartHubServiceImplBase {
 
             @Override
             public void onError(Throwable t) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                System.err.println("Unable to check if food requests are in Stock with Error: " + t.getMessage());
             }
 
             @Override
@@ -346,7 +353,7 @@ public class SmartHub extends SmartHubServiceImplBase {
                             setPickupTime(response.getPickupTime()).
                             build();
 
-                    // we replace the old saved food request with the updated version
+                    // replace the old saved food request with the updated version
                     int index = foodRequests.indexOf(matchingRequest);
                     foodRequests.set(index, updatedRequest);
                     System.out.

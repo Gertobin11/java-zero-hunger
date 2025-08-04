@@ -4,7 +4,7 @@
  */
 package services.FoodSource;
 
-import dns.ServiceRegistry;
+import common.Common;
 import grpc.common.Address;
 import grpc.common.FoodItem;
 import grpc.common.FoodItemQuantity;
@@ -14,10 +14,7 @@ import grpc.food_source.FoodSourceServiceGrpc.FoodSourceServiceImplBase;
 import grpc.food_source.Stock;
 import grpc.food_source.StockResponse;
 import grpc.food_source.StockResponse.Builder;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,20 +130,23 @@ public class FoodSource extends FoodSourceServiceImplBase {
                                 setInstock(true).
                                 build();
                         builder.addStock(stock);
-
+                        System.out.println("Added request "+ savedFoodRequest.getRequestId()+ " to it stock list");
                         break;
+                    }
+                    else {
+                        System.out.println("Unable to fulfill request:"+ savedFoodRequest.getRequestId()+ " not enough stock in location: " + entry.getKey());
                     }
                 }
             }
 
             @Override
             public void onError(Throwable t) {
-                // called when a client sends an error
-                //....
+               System.err.println("Unable to perform check if request is in stock with error: " + t.getMessage());
             }
 
             @Override
             public void onCompleted() {
+                System.out.println("Finished checking requests");
                 // build the message that we have been building up on the on next call
                 StockResponse response = builder.build();
                 // call the onNext on the responseObserver to send the message
@@ -169,37 +169,16 @@ public class FoodSource extends FoodSourceServiceImplBase {
         // create an array of fake eircodes
         String[] eircodes = {"V92 234R", "V92 334J", "V92 1543"};
         // create an array of essential items
-        String[] essentialGroceries = {
-            "Milk",
-            "Pasta",
-            "Rice",
-            "Tomatoes",
-            "Beans",
-            "Fish",
-            "Pasta Sauce",
-            "Cereal",
-            "Oats",
-            "Soup",
-            "Cooking Oil",
-            "Tea",
-            "Coffee",
-            "Sugar",
-            "Flour",
-            "Peanut Butter",
-            "Jam",
-            "Biscuits",
-            "Vegetables",
-            "Salt"
-        };
+        List<String> essentialGroceries = Common.getEssentialGroceriesList();
 
         for (String eircode : eircodes) {
             // create the arraylist of food items
             List<FoodItemQuantity> fooditemQuantityList = new ArrayList<>();
-            for (int i = 0; i <= essentialGroceries.length; i++) {
+            for (int i = 0; i < essentialGroceries.size(); i++) {
                 // create a food item from the FoodItem message 
                 FoodItem foodItem = FoodItem.newBuilder().
                         setId(i + 1).
-                        setName(essentialGroceries[i]).
+                        setName(essentialGroceries.get(i)).
                         build();
                 // create  a foodItemQuantity, using the previous FoodItem
                 FoodItemQuantity foodItemQuantity = FoodItemQuantity.

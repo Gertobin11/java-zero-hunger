@@ -24,6 +24,11 @@ public final class SmartHub {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_smart_hub_StatusResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_smart_hub_SavedFoodRequests_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_smart_hub_SavedFoodRequests_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -37,15 +42,19 @@ public final class SmartHub {
       "to\032\033google/protobuf/empty.proto\"#\n\rStatu" +
       "sRequest\022\022\n\nrequest_id\030\001 \001(\005\"J\n\016StatusRe" +
       "sponse\022\016\n\006status\030\001 \001(\t\022\023\n\013delivery_id\030\002 " +
-      "\001(\005\022\023\n\013pickup_time\030\003 \001(\t2\242\002\n\017SmartHubSer" +
-      "vice\022D\n\022handleFoodRequests\022\023.common.Food" +
-      "Request\032\031.smart_hub.StatusResponse\022C\n\014st" +
-      "atusUpdate\022\030.smart_hub.StatusRequest\032\031.s" +
-      "mart_hub.StatusResponse\022C\n\014getAllStatus\022" +
-      "\026.google.protobuf.Empty\032\031.smart_hub.Stat" +
-      "usResponse0\001\022?\n\rtriggerChecks\022\026.google.p" +
-      "rotobuf.Empty\032\026.google.protobuf.EmptyB\022\n" +
-      "\016grpc.smart_hubP\001b\006proto3"
+      "\001(\005\022\023\n\013pickup_time\030\003 \001(\t\"<\n\021SavedFoodReq" +
+      "uests\022\'\n\005items\030\001 \003(\0132\030.common.SavedFoodR" +
+      "equest2\355\002\n\017SmartHubService\022C\n\022handleFood" +
+      "Requests\022\023.common.FoodRequest\032\030.common.S" +
+      "avedFoodRequest\022C\n\014statusUpdate\022\030.smart_" +
+      "hub.StatusRequest\032\031.smart_hub.StatusResp" +
+      "onse\022C\n\014getAllStatus\022\026.google.protobuf.E" +
+      "mpty\032\031.smart_hub.StatusResponse0\001\022?\n\rtri" +
+      "ggerChecks\022\026.google.protobuf.Empty\032\026.goo" +
+      "gle.protobuf.Empty\022J\n\022getCurrentRequests" +
+      "\022\026.google.protobuf.Empty\032\034.smart_hub.Sav" +
+      "edFoodRequestsB\022\n\016grpc.smart_hubP\001b\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -73,6 +82,12 @@ public final class SmartHub {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_smart_hub_StatusResponse_descriptor,
         new java.lang.String[] { "Status", "DeliveryId", "PickupTime", });
+    internal_static_smart_hub_SavedFoodRequests_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_smart_hub_SavedFoodRequests_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_smart_hub_SavedFoodRequests_descriptor,
+        new java.lang.String[] { "Items", });
     grpc.common.Common.getDescriptor();
     com.google.protobuf.EmptyProto.getDescriptor();
   }

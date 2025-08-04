@@ -30,7 +30,7 @@ public class LogisticsServer {
                 println("Main Logistics Service started, listening on " + server.
                         getPort());
 
-        ServiceRegistry.registerService("logistics", server.getPort());
+        ServiceRegistry.registerService("logistics-service", server.getPort());
 
         server.awaitTermination();
     }
